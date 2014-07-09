@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/imageView_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/head_s" />
+
+    <TextView
+        android:id="@+id/textView_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView_avatar"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="11dp"
+        android:layout_toRightOf="@+id/imageView_avatar"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <CheckBox
+        android:id="@+id/imageView_select"
+        style="@style/CustomCheckboxTheme"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView_name"
+        android:layout_marginRight="28dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignLeft="@+id/textView_name"
+        android:layout_below="@+id/textView_name"
+        android:background="@color/darkgray" />
+
+</RelativeLayout>

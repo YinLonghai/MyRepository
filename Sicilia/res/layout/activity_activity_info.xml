@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/textView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="100dp"
+                android:text="活动"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:text="编辑"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_eighteen" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/relativeLayout1" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="开始时间："
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/dimgray" />
+
+            <TextView
+                android:id="@+id/textView_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView3"
+                android:layout_alignBottom="@+id/textView3"
+                android:layout_toRightOf="@+id/textView3"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/dimgray" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/textView3"
+                android:layout_below="@+id/textView3"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="15dp"
+                android:text="结束时间:"
+                android:textColor="@color/darkgray" />
+
+            <TextView
+                android:id="@+id/textView_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView5"
+                android:layout_alignBottom="@+id/textView5"
+                android:layout_toRightOf="@+id/textView5"
+                android:text=""
+                android:textColor="@color/darkgray" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView5"
+                android:layout_below="@+id/textView5"
+                android:text="提醒时间:"
+                android:textColor="@color/darkgray" />
+
+            <TextView
+                android:id="@+id/textView_remind_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView4"
+                android:layout_alignBottom="@+id/textView4"
+                android:layout_toRightOf="@+id/textView5"
+                android:text=""
+                android:textColor="@color/darkgray" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView3"
+                android:layout_below="@+id/textView4"
+                android:layout_marginTop="14dp"
+                android:text="活动地点:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/dimgray" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/textView6"
+                android:layout_toRightOf="@+id/textView6"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/dimgray" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_alignLeft="@+id/textView10"
+                android:layout_below="@+id/textView10"
+                android:src="@drawable/head_s" />
+
+            <TextView
+                android:id="@+id/textView1_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView2"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView6"
+                android:layout_below="@+id/textView6"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/text_corners_bg"
+                android:gravity="top"
+                android:minHeight="50dp"
+                android:padding="10dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/dimgray" />
+
+            <ImageView
+                android:id="@+id/ImageView_add"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/textView8"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="20dp"
+                android:padding="12dp"
+                android:src="@drawable/activity_add" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/textView8"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@id/ImageView_add"
+                android:gravity="center"
+                android:text="暂时还没有活动分享"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/dimgray"
+                android:visibility="gone" />
+            
+            <HorizontalScrollView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView8"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@id/ImageView_add">
+				<LinearLayout 
+				    android:id="@+id/linearLayout_sharedPeople"
+				    android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_vertical"
+	                android:orientation="horizontal"
+	                ></LinearLayout>
+            <!-- <GridView
+                android:id="@+id/gridView_sharedPeople"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:columnWidth="50dp"
+                android:gravity="center"
+                android:listSelector="@color/transparentwhite"
+                android:stretchMode="columnWidth"
+                android:visibility="visible" />-->           
+  			</HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/textView8"
+                android:layout_below="@id/textView8"
+                android:layout_marginTop="85dp"
+                android:text="活动发起人"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <LinearLayout
+                android:id="@+id/LinearLayout_people"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/imageView2"
+                android:layout_below="@id/imageView2"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp" >
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/participation_on_green" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/wait_off_green" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/reject_off_green" />
+            </LinearLayout>
+
+            <com.guotion.sicilia.ui.view.MeasureGridView
+                android:id="@+id/GridView_people"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/LinearLayout_people"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:columnWidth="70.0dp"
+                android:listSelector="@color/transparentwhite"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,113 @@
+<resources>
+
+    <string name="app_name">Sicilia</string>
+    <string name="theme">•    主题列表     •</string>
+    <string name="birthdayRemind">生日提醒</string>
+    <string name="sendRemindTime">推送发送时间</string>
+    <string name="inputGroupName">请填写聊天组名</string>
+    <string name="ok">OK</string>
+    <string name="activityInvite">活动邀请</string>
+    <string name="activityInviteInfo">这个活动已经邀请了您，但您还没有回应</string>
+    <string name="join">参加</string>
+    <string name="laterResponse">稍后回应</string>
+    <string name="decline">拒绝</string>
+    <string name="acticityNotice">活动通知</string>
+    <string name="iKnow">我知道了</string>
+    <string name="check">查看</string>
+    <string name="account">帐号</string>
+    <string name="finish">完成</string>
+    <string name="manage">管理</string>
+    <string name="loginout">登出</string>
+    <string name="TACloud">TA的云存储</string>
+    
+    <string name="warning">警告</string>
+    <string name="isFreeze">要冻结该账户吗？</string>
+    <string name="freeze">冻结</string>
+    
+    <string name="addTag">为云添加标签</string>
+    <string name="addMessage">添加多个标签用丨分隔开</string>
+    <string name="add">添加</string>
+    
+    <!-- popupwindow_choosephoto -->
+    <string name="choose_photo">选择相片</string>
+    <string name="choose_photo_from_camera">从相机拍照</string>
+    <string name="choose_photo_from_album">从相册选取</string>
+    <string name="cancel">取消</string>
+    
+    <!-- popupwindow_create_activity -->
+    <string name="isJoin">是否参与此次活动</string>
+    <string name="notJoin">不参加</string>
+    <string name="cancelCreate">取消创建</string>
+    
+    <!-- popupwindow_choose_gender -->
+    <string name="alterGender">修改性别</string>
+    <string name="female">男</string>
+    <string name="male">女</string>
+    
+    <!-- activity_login -->
+    <string name="login">登录名</string>
+    <string name="password">密码</string>
+    <string name="forgetpassword">•    忘记密码     •</string>
+    
+    <!-- activity_register -->
+    <string name="familycloud">家云</string>
+    <string name="userRegister">•  注册新用户   •</string>
+    <string name="submit">提交</string>
+    <string name="nickname">昵称</string>
+    <string name="surePassword">确认密码</string>
+    
+    <!-- activity_userInfo -->
+    <string name="username">昵称</string>
+    <string name="family">家庭</string>
+    <string name="familyposition">家族职位</string>
+    <string name="tel">电话</string>
+    <string name="email">邮箱</string>
+    <string name="birthday">生日</string>
+    <string name="sex">性别</string>
+    <string name="preference">个人喜好</string>
+    <string name="signature">个性签名</string>
+    <string name="zone">个人空间</string>
+    <string name="setting">设置</string>
+    <string name="my_userifo">•  我的资料    •</string>
+    <string name="edit">编辑</string>
+
+    <!-- 服务器返回值 -->
+    <string name="E_01">登录名已被使用</string>
+    <string name="E_02">登录失败,用户名或密码错误</string>
+    <string name="E_03">找不到该用户</string>
+    <string name="E_04">找不到该组</string>
+    <string name="E_05">找不到该云储存纪录</string>
+    <string name="E_06">云储存空间容量不足(私人空间1G)</string>
+    <string name="E_07">参数不足,参数不能为空</string>
+    <string name="E_08">找不到该活动</string>
+    <string name="E_09">还没有聊天记录</string>
+    <string name="E_10">找不到该记录</string>
+    <string name="E_11">该账户已被冻结</string>
+    <string name="E_12">需要登录才能操作</string>
+    <string name="E_99">您还没通过审核</string>
+    
+    <string name="T_01">通讯中...</string>
+    <string name="T_02">登录名或密码不能为空</string>
+    <string name="T_03">注册成功，等待管理员审核</string>
+    <string name="T_04">请填写登录名</string>
+    <string name="T_05">请填写密码</string>
+    <string name="T_06">请确认密码</string>
+    <string name="T_07">请选择出生日期</string>
+    <string name="T_08">两次输入的密码不一致</string>
+    <string name="T_09">请填写名称</string>
+    <string name="T_10">已在上传中，可以到上传队列管理</string>
+    <string name="T_11">上传成功</string>
+    <string name="T_12">删除成功</string>
+    <string name="T_13">上传中...</string>
+    <string name="T_14">你的账号已在别的机器登录</string>
+    <string name="T_15">请填写简介</string>
+    <string name="T_16">连接中</string>
+    <string name="T_17">删除中...</string>
+    <string name="T_18">请选择家庭</string>
+    <string name="T_19">请填写邮箱</string>
+    <string name="T_20">请填写手机号码</string>
+    <string name="T_21">新密码不能为空</string>
+    <string name="T_99">自动登录失效,请重新登录</string>
+    
+    <string name="N_01">网络异常</string>
+</resources>

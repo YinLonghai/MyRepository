@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout_cloud_choose"
+            style="@style/layout_title"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:background="@drawable/list_orang"  >
+
+            <TextView
+                android:id="@+id/button_cloud_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/button_cloud_thumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/TextView_check"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="查看"
+            android:textColor="@color/white" 
+            android:textSize="@dimen/textsize_eighteen"/>
+
+        <ImageView
+            android:id="@+id/imageView_add"
+            style="@style/imageview_title"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/add" />
+
+    </RelativeLayout>
+	<TextView
+        android:id="@+id/textView_line"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/relativeLayout1"
+        android:layout_marginLeft="60dp"
+        android:background="@color/darkgray" />
+    <ListView
+        android:id="@+id/listView_cloud"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/relativeLayout1"
+        android:divider="@color/transparentwhite"
+        android:listSelector="@color/transparentwhite">
+    </ListView>
+
+    <GridView
+        android:id="@+id/gridView_cloud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/relativeLayout1"
+        android:numColumns="4"
+        android:visibility="gone" 
+        android:padding="5dp"
+        android:horizontalSpacing="5dp"
+        android:gravity="center"
+        android:verticalSpacing="3dp"
+        android:listSelector="@color/transparentwhite"
+        android:layout_centerHorizontal="true">
+    </GridView>
+
+</RelativeLayout>

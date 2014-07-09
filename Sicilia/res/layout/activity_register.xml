@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_regisetr_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_2"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/activity_register_img_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/common_icon_back_btn_selector" />
+
+        <Button
+            android:id="@+id/activity_register_button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-2dp"
+            android:background="@null"
+            android:text="@string/familycloud"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:text="@string/userRegister"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/activity_register_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:text="@string/submit"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/activity_regisetr_loginName"
+                style="@style/common_editText"
+                android:hint="@string/login"
+                android:maxLength="30" />
+
+            <EditText
+                android:id="@+id/activity_regisetr_nickname"
+                style="@style/common_editText"
+                android:hint="@string/nickname"
+                android:maxLength="30" />
+
+            <EditText
+                android:id="@+id/activity_regisetr_password"
+                style="@style/common_editText"
+                android:hint="@string/password"
+                android:maxLength="16" />
+
+            <EditText
+                android:id="@+id/activity_regisetr_surePassword"
+                style="@style/common_editText"
+                android:hint="@string/surePassword"
+                android:maxLength="16" />
+
+            <EditText
+                android:id="@+id/activity_regisetr_tel"
+                style="@style/common_editText"
+                android:inputType="number"
+                android:hint="@string/tel" />
+
+            <EditText
+                android:id="@+id/activity_regisetr_email"
+                style="@style/common_editText"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+
+            <Button
+                android:id="@+id/activity_regisetr_family"
+                style="@style/common_editText"
+                android:gravity="left|center_vertical"
+                android:hint="@string/family" />
+
+            <Button
+                android:id="@+id/activity_regisetr_birthday"
+                style="@style/common_editText"
+                android:gravity="left|center_vertical"
+                android:hint="@string/birthday" />
+
+            <RadioGroup
+                android:id="@+id/activity_register_radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/edittext_marginleftright"
+                android:layout_marginRight="@dimen/edittext_marginleftright"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:padding="1.0dip"
+                android:weightSum="2.0" >
+
+                <RadioButton
+                    android:id="@+id/activity_register_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/register_male_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:textSize="14.0sp" />
+
+                <RadioButton
+                    android:id="@+id/activity_register_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/register_female_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textSize="14.0sp" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

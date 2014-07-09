@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal" >
+    <com.guotion.sicilia.ui.view.WheelView
+         android:id="@+id/wheelView_year"
+         android:layout_width="120dip"
+         android:layout_height="wrap_content" />
+
+     <com.guotion.sicilia.ui.view.WheelView
+         android:id="@+id/wheelView_month"
+         android:layout_width="80dip"
+         android:layout_height="wrap_content" />
+
+     <com.guotion.sicilia.ui.view.WheelView
+         android:id="@+id/wheelView_day"
+         android:layout_width="80dip"
+         android:layout_height="wrap_content" />
+
+</LinearLayout>

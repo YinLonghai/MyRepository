@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/coral" >
+		<LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+            <TextView
+                android:id="@+id/textView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="100dp"
+                android:text="创建活动"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+       	</LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout_cloud_choose"
+            style="@style/layout_title"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal" 
+            android:background="@drawable/gender_orang">
+
+            <TextView
+                android:id="@+id/button_gender"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="3dp" />
+
+            <TextView
+                android:id="@+id/button_age"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="3dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_cloud_add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingRight="3dp"
+            android:text="完成"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_eighteen" />
+
+        <CheckBox
+            style="@style/CustomCheckboxTheme"
+            android:id="@+id/imageView_select"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/textView_cloud_add"/>
+
+    </RelativeLayout>
+
+    <com.guotion.sicilia.ui.view.ExpandablePullDownView
+        android:id="@+id/expandableListView_member_gender"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/relativeLayout1"/>
+    <com.guotion.sicilia.ui.view.PullDownView
+        android:id="@+id/expandableListView_member_age"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/relativeLayout1"
+        android:visibility="gone" />
+
+</RelativeLayout>

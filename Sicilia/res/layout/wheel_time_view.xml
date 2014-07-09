@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+    <com.guotion.sicilia.ui.view.WheelView
+         android:id="@+id/wheelView_halfday"
+         android:layout_gravity="center_vertical"
+         android:layout_width="90dip"
+         android:layout_height="wrap_content" />
+
+     <com.guotion.sicilia.ui.view.WheelView
+         android:id="@+id/wheelView_hour"
+         android:layout_gravity="center_vertical"
+         android:layout_width="90dip"
+         android:layout_height="wrap_content" />
+     <com.guotion.sicilia.ui.view.WheelView
+         android:id="@+id/wheelView_minute"
+         android:layout_gravity="center_vertical"
+         android:layout_width="90dip"
+         android:layout_height="wrap_content" />
+
+</LinearLayout>

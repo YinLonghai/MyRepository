@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/relout_invite_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+        <TextView
+            android:id="@+id/txt_create_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="创建聊天组"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_eighteen" 
+            android:maxWidth="80dp"
+            android:singleLine="true"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_invite_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="•  邀请新成员  •"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/txt_add_menber"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:text="添加"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_eighteen" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lv_member_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/relout_invite_title"
+        android:listSelector="@color/transparentwhite" 
+        android:divider="@color/transparentwhite"/>
+
+</RelativeLayout>

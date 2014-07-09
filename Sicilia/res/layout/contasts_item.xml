@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+    <ImageView 
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/list_image"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/head_m"/>
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/list_image"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/list_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:singleLine="true"
+            android:textColor="@color/gray"
+            android:layout_alignParentTop="true"
+            android:textSize="@dimen/textsize_seventeen" 
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="20dp"/>
+
+        <TextView
+            android:id="@+id/list_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:gravity="top"
+            android:layout_below="@id/list_name"
+            android:textColor="@color/darkgray" 
+            android:textSize="@dimen/textsize_fifteen"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:textStyle="bold"
+            android:layout_marginTop="-5dp"/>
+        
+        <TextView 
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/list_note"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/silver"/>
+    </RelativeLayout>
+    
+</RelativeLayout>

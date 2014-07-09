@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/textView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="100dp"
+                android:text="活动"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="userName"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:text="编辑"
+            android:textSize="@dimen/textsize_eighteen"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ImageView3"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp"
+        android:src="@drawable/happybday_orang"/>
+
+    <ImageView
+        android:id="@+id/imageView_avatar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/ImageView3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:src="@drawable/head_orang" />
+
+    <TextView
+        android:id="@+id/textView_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView_avatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:text=""
+        android:textColor="@color/lightsalmon"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView_date2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_date"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="" 
+        android:textColor="@color/lightsalmon"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/textView_date2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:src="@drawable/cake_orang" />
+
+</RelativeLayout>

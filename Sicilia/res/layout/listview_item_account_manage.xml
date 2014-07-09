@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+    <ImageView
+        android:id="@+id/img_listitem_account_manage_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/delete_member" />
+    
+    <ImageView
+        android:id="@+id/img_listitem_account_manage_head"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@id/img_listitem_account_manage_delete"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/head_s" />    
+    
+    <TextView
+        android:id="@+id/textView_delete"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:text="删除"
+        android:background="@color/tomato" 
+        android:textSize="@dimen/textsize_fifteen"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:layout_marginRight="20dp"
+        android:visibility="gone"/>
+    
+    <TextView
+        android:id="@+id/tv_listitem_account_manage_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_listitem_account_manage_head"
+        android:layout_toLeftOf="@id/textView_delete"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:text="sdfsd" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffe0e0e0"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/img_listitem_account_manage_head" />
+
+</RelativeLayout>

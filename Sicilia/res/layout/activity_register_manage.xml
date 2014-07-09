@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/Relout_title_id"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/to_manage_register_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="注册管理"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/register_manage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text=""
+            android:textSize="@dimen/textsize_eighteen" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Relout_main_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Relout_title_id"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20.0dp"
+        android:gravity="center_horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/user_head_img"
+                android:layout_width="80.0dp"
+                android:layout_height="80.0dp"
+                android:src="@drawable/head_m" />
+
+            <TextView
+                android:id="@+id/user_name_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_head_img"
+                android:layout_marginTop="10.0dp"
+                android:text=""
+                android:textSize="@dimen/textsize_eighteen" />
+
+            <TextView
+                android:id="@+id/user_birthday_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/user_name_txt"
+                android:layout_marginTop="10.0dp"
+                android:text=""
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Relout_ridio_group_choose"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Relout_main_id"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="50.0dp"
+        android:layout_marginRight="50.0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RadioGroup
+                android:id="@+id/radio_group01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="1.0dp"
+                android:weightSum="2.0" >
+
+                <RadioButton
+                    android:id="@+id/btn_admin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="-2dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/register_manage_seletor_one_orang"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <RadioButton
+                    android:id="@+id/btn_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="-2dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/register_manage_seletor_two_orang"
+                    android:button="@null"
+                    android:gravity="center" />
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radio_group02"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="1.0dp"
+                android:weightSum="2.0" >
+
+                <RadioButton
+                    android:id="@+id/btn_not_pass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="-2dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/register_manage_seletor_three_orang"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <RadioButton
+                    android:id="@+id/btn_was_passed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="-2dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/register_manage_seletor_four_orang"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+            </RadioGroup>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Relout_btn_choose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/Relout_ridio_group_choose"
+        android:layout_marginBottom="10.0dp"
+        android:gravity="center_horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="50.0dp"
+            android:layout_marginRight="50.0dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/btn_submit_edit"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="15.0dp"
+                android:background="@drawable/submit_revision_background_seletor_green" />
+
+            <Button
+                android:id="@+id/btn_del_user"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="15.0dp"
+                android:background="@drawable/remove_members_background_seletor_green" />
+
+            <Button
+                android:id="@+id/btn_frozen_user"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="15.0dp"
+                android:background="@drawable/frozen_background_seletor_blue" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

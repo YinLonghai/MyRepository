@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/white">
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+            <TextView
+                android:id="@+id/textView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="100dp"
+                android:text="活动"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView_add"
+            style="@style/imageview_title"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/add" />
+
+    </RelativeLayout>
+
+    <com.guotion.sicilia.ui.view.PullDownView
+        android:id="@+id/listView_activity_note"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/relativeLayout1"/>
+
+</RelativeLayout>

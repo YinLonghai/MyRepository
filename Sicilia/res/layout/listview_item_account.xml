@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+    <ImageView
+        android:id="@+id/img_listitem_account_head"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/head_s" />
+    
+    <TextView
+        android:id="@+id/tv_listitem_account_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_listitem_account_head"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:text="" />
+    
+    <ImageView
+        android:id="@+id/img_listitem_account_selete"
+        android:layout_width="18dp"
+        android:layout_height="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="30dp"
+        android:visibility="gone"
+        android:src="@drawable/selete" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffe0e0e0"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/img_listitem_account_head" />
+
+</RelativeLayout>

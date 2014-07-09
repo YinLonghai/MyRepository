@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/Relout_title_id"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/to_settings_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="设置"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/settings_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="•  注册管理  •"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <com.guotion.sicilia.ui.view.RefreshableView
+        android:id="@+id/LinearLayout_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/Relout_title_id"
+        android:orientation="vertical">
+        
+        <ScrollView 
+            android:id="@+id/ScrollView_setting"
+            android:layout_width="match_parent"
+        	android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/Linout_frozen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <TextView
+                android:id="@+id/frozen_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gainsboro"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp"
+                android:text="冻结的账户"
+                android:textColor="@color/darkgray"
+                android:textSize="@dimen/textsize_fifteen" />
+
+            <com.guotion.sicilia.ui.view.MeasureListView
+                android:id="@+id/lv_frozen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:divider="@color/darkgray"
+                android:dividerHeight="0.5dp"
+                android:listSelector="@color/transparentwhite" />
+
+            <TextView
+                android:id="@+id/not_pass_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/gainsboro"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp"
+                android:text="未通过的账户"
+                android:textColor="@color/darkgray"
+                android:textSize="@dimen/textsize_fifteen" />
+
+            <com.guotion.sicilia.ui.view.MeasureListView
+                android:id="@+id/lv_not_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:divider="@color/darkgray"
+                android:dividerHeight="0.5dp"
+                android:listSelector="@color/transparentwhite" />
+
+            <TextView
+                android:id="@+id/was_passed_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/gainsboro"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp"
+                android:text="已通过的账户"
+                android:textColor="@color/darkgray"
+                android:textSize="@dimen/textsize_fifteen" />
+
+            <com.guotion.sicilia.ui.view.MeasureListView
+                android:id="@+id/lv_was_passed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:divider="@color/darkgray"
+                android:dividerHeight="0.5dp"
+                android:listSelector="@color/transparentwhite" />
+        </LinearLayout>        
+        </ScrollView>
+    </com.guotion.sicilia.ui.view.RefreshableView>
+
+</RelativeLayout>

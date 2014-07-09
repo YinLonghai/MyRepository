@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/white">
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral">
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+             android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+        <TextView
+            android:id="@+id/textView_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView1"
+            android:text="返回"
+            android:textColor="@color/white" 
+            android:textSize="@dimen/textsize_eighteen"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="群成员"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView_manage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"
+            android:text="管理"
+            android:textColor="@color/white"
+           	android:textSize="@dimen/textsize_eighteen" />
+
+        <TextView
+            android:id="@+id/textView_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"
+            android:text="取消"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textSize="@dimen/textsize_eighteen" />
+
+        <TextView
+            android:id="@+id/textView_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/textView_cancle"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="提交"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textSize="@dimen/textsize_eighteen"/>
+
+    </RelativeLayout>
+
+    <ExpandableListView
+        android:id="@+id/expandableListView_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true" 
+        android:listSelector="@color/transparentwhite"
+        android:groupIndicator="@color/transparentwhite"
+        android:childDivider="@color/transparentwhite"
+        android:divider="@color/white"
+        android:dividerHeight="2dp">
+    </ExpandableListView>
+
+</RelativeLayout>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_create_activity_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" 
+        android:focusableInTouchMode="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/textView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="100dp"
+                android:text="活动列表"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="•  创建活动    •"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:text="提交"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_eighteen" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:layout_below="@id/relativeLayout1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" 
+            android:focusable="true"
+        	android:focusableInTouchMode="true">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/editText_name"
+                android:layout_alignBottom="@+id/editText_name"
+                android:layout_alignLeft="@+id/imageView_start_time"
+                android:text="活动名称"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/lightsalmon" />
+
+            <EditText
+                android:id="@+id/editText_name"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="21dp"
+                android:layout_toLeftOf="@id/textView3"
+                android:background="@drawable/edittext_bg_rectangle"
+                android:gravity="center"
+                android:ems="10"
+                android:paddingLeft="5dp" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/textView_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/editText_location"
+                android:layout_below="@+id/editText_location"
+                android:layout_marginTop="18dp"
+                android:text="2014-4-9 16:02" />
+
+            <TextView
+                android:id="@+id/textView_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView_start_time"
+                android:layout_below="@+id/textView_start_time"
+                android:layout_marginTop="26dp"
+                android:text="2014-4-9 17:02" />
+
+            <TextView
+                android:id="@+id/textView_remind_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView_end_time"
+                android:layout_below="@+id/textView_end_time"
+                android:layout_marginTop="27dp"
+                android:text="2014-4-9 15:02" />
+
+            <ImageView
+                android:id="@+id/imageView_invite_member"
+                android:layout_width="95dp"
+                android:layout_height="34dp"
+                android:layout_alignRight="@+id/editText_desc"
+                android:layout_below="@+id/editText_desc"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/invites_member_orang" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/editText_location"
+                android:layout_alignBottom="@+id/editText_location"
+                android:layout_alignLeft="@+id/textView3"
+                android:text="活动地点"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/lightsalmon" />
+
+            <EditText
+                android:id="@+id/editText_location"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignLeft="@+id/editText_name"
+                android:layout_below="@+id/editText_name"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@id/textView4"
+                android:background="@drawable/edittext_bg_rectangle"
+                android:gravity="center"
+                android:ems="10"
+                android:paddingLeft="5dp" />
+
+            <ImageView
+                android:id="@+id/imageView_start_time"
+                android:layout_width="95dp"
+                android:layout_height="34dp"
+                android:layout_above="@+id/textView_end_time"
+                android:layout_alignRight="@+id/editText_desc"
+                android:src="@drawable/start_orang" />
+
+            <ImageView
+                android:id="@+id/imageView_end_time"
+                android:layout_width="95dp"
+                android:layout_height="34dp"
+                android:layout_above="@+id/textView_remind_time"
+                android:layout_alignLeft="@+id/imageView_start_time"
+                android:src="@drawable/end_orang" />
+
+            <ImageView
+                android:id="@+id/imageView_remind_time"
+                android:layout_width="95dp"
+                android:layout_height="34dp"
+                android:layout_above="@+id/editText_desc"
+                android:layout_alignLeft="@+id/imageView_end_time"
+                android:src="@drawable/remind_orang" />
+
+            <EditText
+                android:id="@+id/editText_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="120dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textView_remind_time"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_bg_rectangle"
+                android:ems="10"
+                android:gravity="top"
+                android:inputType="textMultiLine" 
+                android:padding="10dp"/>
+
+            <com.guotion.sicilia.ui.view.MeasureGridView
+                android:id="@+id/GridView_member"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageView_invite_member"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:cacheColorHint="#00000000"
+                android:columnWidth="70.0dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:numColumns="auto_fit"
+                android:listSelector="@color/transparentwhite"
+                android:stretchMode="columnWidth" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

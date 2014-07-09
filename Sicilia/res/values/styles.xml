@@ -1,0 +1,124 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="common_button">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="common_editText">
+        <item name="android:layout_marginBottom">7dp</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginLeft">35dp</item>
+        <item name="android:layout_marginRight">35dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:background">@drawable/input</item>
+    </style>
+
+    <!-- activity_userinfo_left -->
+    <style name="textView_userInfo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@color/lightsalmon</item>
+    </style>
+
+    <!-- activity_userinfo_right -->
+    <style name="editText_userInfo_right">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">28dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">45dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColorHint">@color/gainsboro</item>
+        <item name="android:background">@null</item>
+    </style>
+    
+    <style name="textView_others_info_right">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">28dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">35dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    
+    <style name="common_dialog_button" >
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox_style_orang</item>
+    </style>
+	<style name="Theme.CommonDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item> <!-- 设置title -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item> <!-- 设置边框 -->
+        <item name="android:windowIsTranslucent">true</item> <!-- 设置半透明 -->
+    </style>
+     <style name="textStyle">
+        <item name="android:shadowColor">#ffffffff</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">1</item>
+    </style>
+    <style name="dialog_full_screen" parent="AppTheme">
+       <item name="android:windowFrame">@null</item><!--边框-->
+       	<item name="android:layout_width">match_parent</item>
+    	<item name="android:layout_height">match_parent</item>
+        <item name="android:windowIsTranslucent">false</item><!--半透明-->
+        <item name="android:backgroundDimEnabled">true</item><!--模糊-->
+    </style>
+    
+     <style name="dialog_download_full_screen" parent="AppTheme">
+       <item name="android:windowFrame">@null</item><!--边框-->
+       	<item name="android:layout_width">match_parent</item>
+    	<item name="android:layout_height">match_parent</item>
+        <item name="android:windowIsTranslucent">true</item><!--半透明-->
+        <item name="android:backgroundDimEnabled">true</item><!--模糊-->
+        <item name="android:windowBackground">@color/transparentwhite</item>
+        <item name="android:background">@color/transparentwhite</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+    
+    <style name="imageview_title">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">14dp</item>
+    </style>
+    <style name="layout_title">
+        <item name="android:layout_width">175dp</item>
+        <item name="android:layout_height">30dp</item>
+    </style>
+    <style name="back_title">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+    </style>
+</resources>

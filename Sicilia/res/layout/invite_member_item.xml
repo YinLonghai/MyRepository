@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <ImageView
+        android:id="@+id/img_member_head"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/head_m" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/img_member_head">
+
+        <TextView
+            android:id="@+id/txt_member_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="daisy"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/txt_member_name"
+            android:layout_marginTop="25dp"
+            android:background="@color/darkgray" />
+    </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/select_member_box"
+        style="@style/CustomCheckboxTheme"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp" />
+
+</RelativeLayout>

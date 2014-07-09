@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/Relout_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/Linlout_title"
+            style="@style/layout_title"
+            android:layout_centerInParent="true"
+            android:background="@drawable/contract_orang"
+            android:gravity="center" >
+
+            <RadioGroup
+                android:id="@+id/radio_group01"
+                android:layout_width="175dp"
+            	android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:padding="1.0dp"
+                android:weightSum="2.0" >
+
+                <RadioButton
+                    android:id="@+id/btn_contract"
+                    android:layout_width="60.0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <RadioButton
+                    android:id="@+id/btn_chat"
+                    android:layout_width="60.0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.0"
+                    android:button="@null"
+                    android:gravity="center" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/add_off_img"
+            style="@style/imageview_title"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/add"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Relout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/title_height"
+        android:layout_marginTop="@dimen/title_height" >
+
+        <com.guotion.sicilia.ui.view.PullDownView
+            android:id="@+id/lv_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:cacheColorHint="#00000000"
+            android:divider="@color/transparentwhite"
+            android:dividerHeight="0dp"
+            android:listSelector="@color/transparentwhite"
+            android:visibility="gone" />
+        <com.guotion.sicilia.ui.view.PullDownView
+            android:id="@+id/lv_main_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:cacheColorHint="#00000000"
+            android:divider="@color/transparentwhite"
+            android:dividerHeight="0dp"
+            android:listSelector="@color/transparentwhite"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rolout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/search_bar" >
+
+        <ImageView
+            android:id="@+id/search_bottom"
+            android:layout_width="50.0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10.0dp"
+            android:layout_marginRight="5.0dp"
+            android:src="@drawable/search" />
+
+        <EditText
+            android:id="@+id/search_txt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="60.0dp"
+            android:layout_marginRight="60.0dp"
+            android:background="@color/transparentwhite" />
+
+        <ImageButton
+            android:id="@+id/img_search"
+            android:layout_width="50.0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/searching_off" />
+    </RelativeLayout>
+
+</RelativeLayout>

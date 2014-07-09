@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/lightsalmon"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/imageView_others_info_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:clickable="true"
+            android:src="@drawable/common_icon_back_btn_selector" />
+
+        <TextView
+            android:id="@+id/textView_other_info_suerName"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/title_height"
+            android:clickable="true"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="@dimen/userinfo_top_textsize" />
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textView_other_info_choud"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/title_height"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="@string/TACloud"
+            android:textColor="@color/white"
+            android:textSize="@dimen/userinfo_top_textsize" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/img_other_info_head"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/head_m" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/tv_other_info_userName"
+                    style="@style/textView_others_info_right"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_userName"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_userName"
+                    android:layout_toLeftOf="@+id/tv_other_info_userName"
+                    android:text="@string/username" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_family"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_userName"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_family"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_family"
+                    android:layout_toLeftOf="@+id/tv_other_info_family"
+                    android:text="@string/family" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_familyposition"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_family"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_familyposition"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_familyposition"
+                    android:layout_toLeftOf="@+id/tv_other_info_familyposition"
+                    android:text="@string/familyposition" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_birthday"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_familyposition"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_birthday"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_birthday"
+                    android:layout_toLeftOf="@+id/tv_other_info_birthday"
+                    android:text="@string/birthday" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_sex"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_birthday"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_sex"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_sex"
+                    android:layout_toLeftOf="@+id/tv_other_info_sex"
+                    android:text="@string/sex" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_tel"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_sex"
+                    android:textColor="@color/blue"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_tel"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_tel"
+                    android:layout_toLeftOf="@+id/tv_other_info_tel"
+                    android:text="@string/tel" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_email"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_tel"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_email"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_email"
+                    android:layout_toLeftOf="@+id/tv_other_info_email"
+                    android:text="@string/email" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_preference"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_email"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_preference"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_preference"
+                    android:layout_toLeftOf="@+id/tv_other_info_preference"
+                    android:text="@string/preference" />
+
+                <TextView
+                    android:id="@+id/tv_other_info_signature"
+                    style="@style/textView_others_info_right"
+                    android:layout_below="@id/tv_other_info_preference"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/tv_userInfo_signature"
+                    style="@style/textView_userInfo"
+                    android:layout_alignBaseline="@+id/tv_other_info_signature"
+                    android:layout_toLeftOf="@+id/tv_other_info_signature"
+                    android:text="@string/signature" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

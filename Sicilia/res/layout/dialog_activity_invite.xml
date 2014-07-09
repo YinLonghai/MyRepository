@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_shape_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/activityInvite" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="-10dp"
+        android:gravity="center"
+        android:text="@string/activityInviteInfo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1.0dp"
+        android:background="@drawable/shape_line" />
+
+    <Button
+        android:id="@+id/button_dialog_activity_invite_join"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        style="@style/common_dialog_button"
+        android:text="@string/join" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1.0dp"
+        android:background="@drawable/shape_line" />
+
+    <Button
+        android:id="@+id/button_dialog_activity_invite_laterResponse"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        style="@style/common_dialog_button"
+        android:text="@string/laterResponse" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1.0dp"
+        android:background="@drawable/shape_line" />
+
+    <Button
+        android:id="@+id/button_dialog_activity_invite_decline"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        style="@style/common_dialog_button"
+        android:text="@string/decline" />
+
+</LinearLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/transparentwhite">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/contentPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" 
+        android:background="@color/transparentwhite"/>
+
+    
+    <com.guotion.common.PictureBrowser.PagePointView
+        android:id="@+id/pagePointView_pictureBrowse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" 
+        android:background="@color/transparentwhite"/>
+
+
+</RelativeLayout>

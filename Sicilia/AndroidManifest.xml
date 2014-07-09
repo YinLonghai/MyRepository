@@ -1,0 +1,79 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.guotion.sicilia"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
+	<!-- 写入SD的权限权限 -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 录音权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <permission android:name="com.guotion.sicilia.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.guotion.sicilia.permission.C2D_MESSAGE" />
+	<application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data android:name="com.google.android.gms.version"
+           android:value="@integer/google_play_services_version" />
+        <activity android:name=".ui.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.RegisterActivity"></activity>
+        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.ChatActivity"></activity>
+        <activity android:name=".ui.BirthdayRemindActivity"></activity>
+        <activity android:name=".ui.BirthdayRemindItemActivity"></activity>
+        <activity android:name=".ui.CloudActivity"></activity>
+        <activity android:name=".ui.GroupMemberActivity"></activity>
+        <activity android:name=".ui.RegisterManageActivity"></activity>
+        <activity android:name=".ui.RegisterSettingActivity"></activity>
+        <activity android:name=".ui.UserCloudsActivity"></activity>
+        <activity android:name=".ui.UserInfoActivity"></activity>
+        <activity android:name=".ui.ActivityInfoActivity"></activity>
+        <activity android:name=".ui.InviteMemberActivity"></activity>
+        <activity android:name=".ui.ActivityNotesActivity"></activity>
+        <activity android:name=".ui.ActivityListActivity"></activity>
+        <activity android:name=".ui.ForgetPasswordActivity"></activity>
+        <activity android:name=".ui.CreateChatgroupActivity"></activity>
+        <activity android:name=".ui.InviteMembersActivity"></activity>
+        <activity android:name=".ui.CloudCheckActivity"></activity>
+        <activity android:name=".ui.GroupChatActivity"></activity>
+        <activity android:name=".ui.ActivityGroupInfo"></activity>
+        <activity android:name=".ui.ActivityGroupInfoEdit"></activity>
+        <activity android:name=".ui.GroupMemberManageActivity"></activity>
+        <activity android:name=".ui.ActivityGroupInfoEditInto"></activity>
+        <activity android:name=".ui.SetThemeActivity"></activity>
+        <activity android:name=".ui.BirthdayRemindTimeActivity"></activity>
+        <activity android:name=".ui.TagActivity"></activity>
+        <activity android:name=".ui.OtherInfoActivity"></activity>
+        
+        
+        <receiver
+           android:name="com.guotion.sicilia.gcm.GcmBroadcastReceiver"
+           android:permission="com.google.android.c2dm.permission.SEND" >
+           <intent-filter>
+               <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+               <category android:name="com.guotion.sicilia" />
+           </intent-filter>
+       </receiver>
+       <service android:name="com.guotion.sicilia.gcm.GcmIntentService" />
+    </application>
+
+</manifest>

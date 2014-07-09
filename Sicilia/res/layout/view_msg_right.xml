@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_msg_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="50dp"        
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bubble_outgoing_green"
+        android:paddingRight="30dp"
+        android:paddingLeft="10dp" >
+
+        <TextView
+            android:id="@+id/textView_msg_right_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"            
+            android:minWidth="20dp"
+            android:maxWidth="200dp"
+            android:layout_centerVertical="true"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView
+            android:id="@+id/imageView_msg_right_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:visibility="gone"
+            android:background="@drawable/playingvoice" />
+    </RelativeLayout> 
+
+    <ImageView
+        android:id="@+id/imageView_msg_right_head"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/head_m"
+        android:layout_alignBottom="@id/relativeLayout_msg_right" />
+
+    <TextView
+        android:id="@+id/textView_msg_right_audiotime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/relativeLayout_msg_right"
+        android:layout_toLeftOf="@id/relativeLayout_msg_right"
+        android:layout_marginTop="5dp"
+        android:text="1'"
+        android:visibility="gone"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/textView_msg_right_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/relativeLayout_msg_right"
+        android:layout_toLeftOf="@id/relativeLayout_msg_right"
+        android:layout_marginBottom="5dp"
+        android:text="已发送"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>

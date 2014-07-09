@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="main_title_string_array">
+        <item>对话</item>
+        <item>成员</item>
+        <item>活动</item>
+        <item>云</item>
+        <item>设置</item>
+    </string-array> 
+</resources>

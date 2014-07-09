@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:layout_alignParentTop="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@color/coral" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/textView_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxWidth="100dp"
+                android:text="云存储"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:text="上传"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_eighteen" />
+    </RelativeLayout>
+
+   
+
+    <TextView
+        android:id="@+id/TextView_file_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_marginLeft="46dp"
+        android:layout_marginTop="25dp"
+        android:text="文件名称"
+        android:textSize="@dimen/textsize_eighteen" />
+
+    <EditText
+        android:id="@+id/editText_file_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/relativeLayout1"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="46dp"
+        android:layout_marginTop="25dp"
+        android:layout_toRightOf="@id/TextView_file_name"
+        android:background="@color/darkgray"
+        android:singleLine="true"/>
+
+    <CheckBox
+        android:id="@+id/imageView_private"
+        android:layout_width="35dp"
+        android:layout_height="22dp"
+        android:layout_alignRight="@id/editText_file_name"
+        android:layout_below="@id/editText_file_name"
+        android:layout_marginTop="12dp"
+        android:button="@drawable/checkbox_private_seletor"/>
+
+    <EditText
+        android:id="@+id/editText_dec"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_below="@id/imageView_private"
+        android:layout_marginLeft="46dp"
+        android:layout_marginRight="46dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edittext_bg_rectangle"
+        android:ems="10"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:paddingBottom="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="10dp"/>
+
+    <ProgressBar
+        android:id="@+id/ProgressBar_size"
+        android:layout_width="150dp"
+        android:layout_height="18dp"
+        android:layout_alignLeft="@id/editText_dec"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/editText_dec"
+        android:layout_marginLeft="46dp"
+        android:layout_marginTop="20dp"
+        android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
+        android:indeterminateOnly="false"
+        android:max="1000"
+        android:progressDrawable="@drawable/progressbar_green" />
+
+    <TextView
+        android:id="@+id/textView_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/editText_dec"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="46dp"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/ProgressBar_size"
+        android:gravity="right"
+        android:text="0.00M/1G" />
+    
+ 	<ImageView
+        android:id="@+id/imageView_choose_file"
+        android:layout_width="95dp"
+        android:layout_height="34dp"
+        android:layout_alignRight="@id/textView_size"
+        android:layout_below="@id/ProgressBar_size"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/select_file_green" />
+ 	<TextView
+        android:id="@+id/textView_choosed_file_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/ProgressBar_size"
+        android:layout_below="@id/ProgressBar_size"
+        android:layout_marginTop="25dp"
+        android:text="附件大小"
+        android:visibility="gone"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <GridView
+        android:id="@+id/gridView_choosed_files"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView_choose_file"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:horizontalSpacing="5dp"
+        android:numColumns="4" >
+    </GridView>
+
+    
+
+</RelativeLayout>

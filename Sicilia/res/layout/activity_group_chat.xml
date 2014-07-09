@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:id="@+id/activity_group_chat_root"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout_chat_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@color/coral">
+
+        <ImageView
+            android:id="@+id/textView_chat_groupinfo"
+            style="@style/imageview_title"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/view2_green"/>
+
+        <TextView
+            android:id="@+id/textView_chat_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_chat_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <ImageView
+                android:id="@+id/ImageView_back"
+                style="@style/back_title"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_ab_back_holo_dark_am" />
+
+            <TextView
+                android:id="@+id/textView_chat_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="聊天组"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_eighteen" />
+
+        </LinearLayout>
+        
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout_chat_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gainsboro"
+        android:paddingTop="1dp"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:id="@+id/editText_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:maxLines="3"
+            android:background="@color/white"
+            android:hint="信息……"
+            android:textColorHint="@color/darkgray"
+            android:minHeight="50dp"
+            android:layout_marginTop="3dp" 
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textView_chat_send"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:background="@drawable/keyboard_off_green"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView_chat_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:background="@drawable/add_off_green"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <com.guotion.sicilia.ui.view.PullDownView
+        android:id="@+id/listView_chat_msg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/RelativeLayout_chat_edit"
+        android:layout_below="@id/RelativeLayout_chat_title"/>
+
+</RelativeLayout>
