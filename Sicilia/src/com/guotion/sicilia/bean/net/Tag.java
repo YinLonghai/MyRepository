@@ -10,13 +10,22 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Tag {
-    public String type = "";//cloud and framily
+	public String _id="";
+    public String type = "";//cloud and family
     public List<String> tags;
 
     public Tag() {}
 
     public Tag(String type, List<String> tags) {
-        this.type = type;
+		super();
+		this.type = type;
+		this.tags = tags;
+	}
+
+
+	public Tag(String _id,String type, List<String> tags) {
+        this._id = _id;
+    	this.type = type;
         this.tags = tags;
     }
 
