@@ -49,7 +49,7 @@ public class DefaultIOCallback implements IOCallback {
 			jsonObject = new JSONObject(data);
 			if (jsonObject.has("logout")) {
 				if (connectionListener != null)
-					connectionListener.notifyConnectionClosed();
+					connectionListener.notifyOtherDiviceLogin();
 			} else if (jsonObject.has("recieve")) {// 收到“消息送达的反馈”消息
 				chatItem = gson.fromJson(jsonObject.getString("msg"),ChatItem.class);
 				messageListener.notifyMessageSendSuccess(chatItem);

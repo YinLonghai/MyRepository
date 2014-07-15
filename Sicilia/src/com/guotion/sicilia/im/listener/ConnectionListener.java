@@ -14,4 +14,9 @@ public interface ConnectionListener {
     public void notifyAnErrorOccur(Exception e);
 
     public void notifyConnectionClosed();
+    
+    /**
+     * 其他的设备登录该账号，此时过三秒后回到登录界面
+     */
+    public void notifyOtherDiviceLogin();
 }
