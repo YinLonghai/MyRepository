@@ -2,11 +2,14 @@ package com.guotion.sicilia.im;
 
 import com.guotion.sicilia.im.constant.ChatServerConstant;
 import com.guotion.sicilia.im.util.X509TrustManagerImpl;
+
 import io.socket.IOCallback;
 import io.socket.SocketIO;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
+
 import java.net.MalformedURLException;
 import java.security.SecureRandom;
 
@@ -61,9 +64,13 @@ public class ChatServer {
             socketIO.disconnect();
             socketIO = null;
         }
+        if(chat!=null)
+        	chat=null;
     }
 
-    public Chat getChat() {
+    public Chat getChat() throws Exception {
+    	if(chat==null)
+    		throw new Exception("chat is null ,you need call login first");
         return chat;
     }
 
