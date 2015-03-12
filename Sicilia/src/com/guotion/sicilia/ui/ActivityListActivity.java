@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.ActivityGroupInfo;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.util.ActivityManager;
@@ -45,14 +46,24 @@ public class ActivityListActivity extends Activity{
 	private LinearLayout llBack;
 	
 	private ArrayList<ActivityGroupInfo> grouplist;
+	
+	private SiciliaApplication siciliaApplication;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_activity_list);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(ActivityListActivity.this);
 		initData();
 		initView();
 		initListener();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(ActivityListActivity.this);
+		super.onDestroy();
 	}
 	private void initData() {
 		grouplist = new ArrayList<ActivityGroupInfo>();
@@ -169,7 +180,7 @@ public class ActivityListActivity extends Activity{
 //						} catch (InterruptedException e) {
 //							e.printStackTrace();
 //						}
-						getActivityList();
+//						getActivityList();
 						/** 关闭 刷新完毕 ***/
 						expandablePullDownView.RefreshComplete();//这个事线程安全的 可看源代码
 					}

@@ -8,10 +8,10 @@ package com.guotion.sicilia.bean.net;
  * To change this template use File | Settings | File Templates.
  */
 public class SignatureHistory {
-    private String _id = "";
-    private String content = "";//签名内容
-    private String date = "";//日期
-    private Object user;//所有者
+    public String _id = "";
+    public String content = "";//签名内容
+    public String date = "";//日期
+    public Object user;//所有者
 
     public SignatureHistory() {
     }

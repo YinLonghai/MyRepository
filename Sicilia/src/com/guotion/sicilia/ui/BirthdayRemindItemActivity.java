@@ -3,6 +3,7 @@ package com.guotion.sicilia.ui;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.constant.ChatServerConstant;
@@ -36,13 +37,22 @@ public class BirthdayRemindItemActivity extends Activity{
 	private User user;
 	private String activityId;
 
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_birthday_remind_item);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(BirthdayRemindItemActivity.this);
 		initData();
 		initView();
 		initListener();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(BirthdayRemindItemActivity.this);
+		super.onDestroy();
 	}
 	private void initData() {
 		if(getIntent().hasExtra("user")){

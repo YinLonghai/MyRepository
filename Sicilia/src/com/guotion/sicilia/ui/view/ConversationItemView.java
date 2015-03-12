@@ -1,5 +1,6 @@
 package com.guotion.sicilia.ui.view;
 
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.common.utils.MyUtil;
@@ -24,7 +25,7 @@ import android.widget.TextView;
 public class ConversationItemView extends LinearLayout{
 	private final int UPDATE_IVAVATAR = 1;
 
-	private ImageView ivAvatar;// 头像
+	private SimpleNetImageView ivAvatar;// 头像
 	private TextView tvNewInfor;// 新消息标记
 	private TextView tvContact;// 联系人名字
 	private TextView tvContent;// 信息内容
@@ -64,7 +65,7 @@ public class ConversationItemView extends LinearLayout{
 	}
 	private void initView(Context context) {
 		View view = LayoutInflater.from(context).inflate(R.layout.listview_main_conversation_item, this,true);
-		ivAvatar = (ImageView) view.findViewById(R.id.ImageView_infor_avatar);
+		ivAvatar = (SimpleNetImageView) view.findViewById(R.id.ImageView_infor_avatar);
 		tvNewInfor = (TextView) view.findViewById(R.id.TextView_newinfor);
 		tvContact = (TextView) view.findViewById(R.id.TextView_contact);
 		tvContent = (TextView) view.findViewById(R.id.TextView_content);
@@ -111,14 +112,25 @@ public class ConversationItemView extends LinearLayout{
 		}else{
 			tvContent.setText(conversationInfo.content);
 		}
-		//ivAvatar.setImageResource(R.drawable.head_orang);
+		String imgUrl = conversationInfo.GroupPhoto;
+		if(imgUrl != null && !imgUrl.equals("")){
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
+			if(bitmap != null){
+				ivAvatar.setImageBitmap(bitmap);
+			}
+		}else{
+			ivAvatar.setImageResource(R.drawable.head_orang);
+		}
 	}
 	public void initNetImg(){
 		String imgUrl = conversationInfo.GroupPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){//System.out.println(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
-			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
 			if(bitmap == null){
-				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+conversationInfo.GroupPhoto, ivAvatar, R.drawable.head_orang, R.drawable.head_orang);
+//				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+conversationInfo.GroupPhoto, ivAvatar, R.drawable.head_orang, R.drawable.head_orang);
+				ivAvatar.loadImage(ChatServerConstant.URL.SERVER_HOST+conversationInfo.GroupPhoto, cachePath, R.drawable.head_orang);
 			}else{
 				ivAvatar.setImageBitmap(bitmap);
 			}

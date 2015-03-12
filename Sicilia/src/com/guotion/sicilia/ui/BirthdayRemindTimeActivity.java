@@ -1,6 +1,7 @@
 package com.guotion.sicilia.ui;
 
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.util.ActivityManager;
 import com.guotion.sicilia.ui.view.TimeWheelView;
@@ -33,15 +34,24 @@ public class BirthdayRemindTimeActivity extends Activity{
 	
 	private String activityId;
 	private String birthday;
+	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_birthdayremind_time);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(BirthdayRemindTimeActivity.this);
 		initData();
 		initView();
 		initListener();
 	}
-	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(BirthdayRemindTimeActivity.this);
+		super.onDestroy();
+	}
 	private void initData(){
 		activityId = getIntent().getStringExtra("activityId");
 		birthday = getIntent().getStringExtra("birthday");

@@ -1,6 +1,7 @@
 package com.guotion.sicilia.ui.view;
 
 import com.google.gson.Gson;
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -20,7 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ActivityChildItemView extends RelativeLayout{
-	private ImageView avatar;
+	private SimpleNetImageView avatar;
 	private TextView tvName;
 	private TextView date;
 	private TextView desc;
@@ -37,7 +38,7 @@ public class ActivityChildItemView extends RelativeLayout{
 	}
 	private void initView(){
 		LayoutInflater.from(getContext()).inflate(R.layout.listview_item_child_activity, this);
-		avatar = (ImageView) findViewById(R.id.imageView_avatar);
+		avatar = (SimpleNetImageView) findViewById(R.id.imageView_avatar);
 		date = (TextView) findViewById(R.id.textView_date);
 		desc = (TextView) findViewById(R.id.textView_desc);
 		tvName = (TextView)findViewById(R.id.textView_name);
@@ -52,14 +53,17 @@ public class ActivityChildItemView extends RelativeLayout{
 		tvName.setText(activityInfo.name);
 		date.setText(activityInfo.date);
 		desc.setText(activityInfo.content);
+		avatar.setImageResource(R.drawable.head_orang);
 	}
 	public void initNetImg(){
 		User user = new Gson().fromJson(activityInfo.creator+"", User.class);
 		String imgUrl = user.headPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
 			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
 			if(bitmap == null){
-				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, avatar, R.drawable.head_orang, R.drawable.head_orang);
+				avatar.loadImage(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cachePath, R.drawable.head_orang);
+//				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, avatar, R.drawable.head_orang, R.drawable.head_orang);
 			}else{
 				avatar.setImageBitmap(bitmap);
 			}

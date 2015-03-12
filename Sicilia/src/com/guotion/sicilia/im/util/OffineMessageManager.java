@@ -18,15 +18,6 @@ public class OffineMessageManager {
 	private ChatItemManager chatItemManager = new ChatItemManager();
 	private Gson gson = new Gson();
 	/**
-	 * 用户记录哪些组已经获取过离线
-	 */
-	private Map<String, String> havenGet = new HashMap<String, String>();
-
-	public Map<String, String> getHavenGet() {
-		return this.havenGet;
-	}
-	
-	/**
 	 * 获取有记录的组历史消息 把获取离线消息的方法放到一个线程中执行，方法可能会很耗时
 	 * 
 	 * @param userId
@@ -52,19 +43,19 @@ public class OffineMessageManager {
 				if (chatHistory != null) {
 					String lastReadChatItemId = jsonObject.getString(chatGroup.get_id());
 					List<ChatItem> oneGroupItem = new LinkedList<ChatItem>();
+					System.out.println("chatHistoryId="+chatHistory.get_id()+",chatItemId="+lastReadChatItemId);
 					List<ChatItem> items = chatItemManager.getMsgAfterOneMsg(chatHistory.get_id(),lastReadChatItemId);
 					//如果有lastRead记录，但是没有新消息就当没有lastRead记录处理，重新获取历史消息。
 					if(items.size() > 0){
-						havenGet.put(chatGroup.get_id(), chatGroup.get_id());// 因为只是用于判断是否已经获取过了离线消息,所以保存的值是什么无需关心
 						oneGroupItem.addAll(items);
 						while(items.size() == 20) {
 							items = chatItemManager.getMsgAfterOneMsg(chatHistory.get_id(),oneGroupItem.get(oneGroupItem.size() - 1)._id);
 							oneGroupItem.addAll(items);
 						}
-						chatItems.put(chatGroup.get_id(),oneGroupItem);
 						lastReadMap.put(chatGroup.get_id(),oneGroupItem.get(oneGroupItem.size() - 1).get_id());
 						System.out.println(chatGroup.get_id()+"收到的消息条数:"+oneGroupItem.size());
 					}
+					chatItems.put(chatGroup.get_id(),oneGroupItem);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -101,7 +92,9 @@ public class OffineMessageManager {
 		if (groupDict.length() > 0) {
 			String dict = groupDict.deleteCharAt(groupDict.length() - 1).toString();
 			System.out.println("上传的dict=" + dict);
-			return chatItemManager.updateLastRead(userId, dict);
+			LastRead lastRead = chatItemManager.updateLastRead(userId, dict);
+			System.out.println("lastRead="+lastRead);
+			return lastRead;
 		}
 		return null;
 	}

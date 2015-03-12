@@ -38,4 +38,7 @@ public abstract class InputSingleDialog extends Dialog{
 			}
 		});
 	}
+	public void setHint(String hint){
+		etContent.setHint(hint);
+	}
 }

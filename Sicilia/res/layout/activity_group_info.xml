@@ -101,4 +101,12 @@
             android:background="@drawable/member_1_orang" />
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/Button_1"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/relout_group_member"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/quit_orang" />
 </RelativeLayout>

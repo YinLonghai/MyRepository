@@ -42,16 +42,23 @@ public class InviteMemberAdapter extends BaseAdapter {
 	private ArrayList<User> choose;
 	private LayoutInflater inflater;
 	int theme;
+	boolean[] states;
 	public InviteMemberAdapter() {}
 
 	public InviteMemberAdapter(Context context, ArrayList<User> list) {
 		this.context = context;
 		this.list = list;
+		states = new boolean[list.size()];
 		inflater = LayoutInflater.from(context);
 		theme = new PreferencesHelper(context).getInt(AppData.THEME);
 		choose = new ArrayList<User>();
 	}
 
+	public void setSize(int size){
+		if(states.length != size){
+			states = new boolean[size];
+		}
+	}
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -111,15 +118,22 @@ public class InviteMemberAdapter extends BaseAdapter {
 //		if (bitmap != null) {
 //			holder.listImage.setImageBitmap(bitmap);
 //		}		
-		holder.listName.setText(entity.userName);
+		holder.listName.setText(entity.nickName);
 		holder.listName.setTextColor(Color.BLACK);
+		if(states[position]){
+			holder.listCheckbox.setChecked(true);
+		}else{
+			holder.listCheckbox.setChecked(false);
+		}
 		holder.listCheckbox.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				CheckBox cb = (CheckBox)v;
 				if(cb.isChecked()){
+					states[position] = true;
 					choose.add(list.get(position));
 				}else{
+					states[position] = false;
 					choose.remove(list.get(position));
 				}
 			}
@@ -130,9 +144,11 @@ public class InviteMemberAdapter extends BaseAdapter {
 				if(holder.listCheckbox.isChecked()){
 					holder.listCheckbox.setChecked(false);
 					choose.remove(list.get(position));
+					states[position] = false;
 				} else {
 					holder.listCheckbox.setChecked(true);
 					choose.add(list.get(position));
+					states[position] = true;
 				}
 			}
 		});

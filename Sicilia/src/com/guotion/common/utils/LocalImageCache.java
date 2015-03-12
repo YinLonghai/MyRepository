@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
+import com.guotion.sicilia.util.AndroidFileUtils;
 
 /**
  * 主要用于好友头像缓存，如会话头像和好友列表头像
@@ -59,7 +59,8 @@ public class LocalImageCache {
 	 */
 	public Bitmap loadImageBitmap( String pathName){
 		if (bitmapCaches.get(pathName) == null || bitmapCaches.get(pathName).get() == null) {
-			Bitmap bitmap = BitmapFactory.decodeFile(pathName);
+//			Bitmap bitmap = BitmapFactory.decodeFile(pathName);
+			Bitmap bitmap = AndroidFileUtils.getBitmap(pathName, 800, 800);
 			SoftReference<Bitmap> softReference = new SoftReference<Bitmap>(bitmap);
 			bitmap = null;
 			bitmapCaches.put(pathName, softReference);

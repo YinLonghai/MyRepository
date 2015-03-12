@@ -47,11 +47,18 @@ public class VolleyUtil {
 		requestQueue = Volley.newRequestQueue(context);
 		imageCache = new ImageCache() {  
             @Override  
-            public void putBitmap(String key, Bitmap value) { 
+            public void putBitmap(String key, final Bitmap value) { 
             	bitmapCaches.put(key,new SoftReference<Bitmap>(value));  
                 if(downloadImageListener != null)
                 	downloadImageListener.finished(value);
-                CacheUtil.getInstence().cacheImage(value, CacheUtil.avatarCachePath, url.substring(url.lastIndexOf("/")+1));
+                final String imgUrl = url;
+                new Thread(new Runnable() {
+					@Override
+					public void run() {
+						CacheUtil.getInstence().cacheImage(value, CacheUtil.avatarCachePath, imgUrl.substring(imgUrl.lastIndexOf("/")+1));
+					}
+				}).start();
+               
             }
             @Override  
             public Bitmap getBitmap(String key) {  
@@ -99,10 +106,10 @@ public class VolleyUtil {
      */
 	public void loadImageByVolley(String imageUrl,ImageView view, int defaultImageResId, int errorImageResId){
 		url = imageUrl;
-		FakeX509TrustManager.allowAllSSL();
-        ImageLoader imageLoader = new ImageLoader(requestQueue, imageCache); // System.out.println("imageLoader="+imageLoader);
-        ImageListener listener = ImageLoader.getImageListener(view, defaultImageResId,errorImageResId);  //System.out.println("listener="+listener);
-        imageLoader.get(imageUrl, listener);  
+//		FakeX509TrustManager.allowAllSSL();
+//        ImageLoader imageLoader = new ImageLoader(requestQueue, imageCache); // System.out.println("imageLoader="+imageLoader);
+//        ImageListener listener = ImageLoader.getImageListener(view, defaultImageResId,errorImageResId);  //System.out.println("listener="+listener);
+//        imageLoader.get(imageUrl, listener);  
     }  
       
     /** 

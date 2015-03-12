@@ -1,13 +1,17 @@
 package com.guotion.sicilia.ui.adapter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
 import com.guotion.sicilia.R;
 import com.guotion.sicilia.bean.UserGroupInfo;
 import com.guotion.sicilia.ui.view.MemberManageChildItemView;
@@ -16,11 +20,21 @@ import com.guotion.sicilia.util.DisplayUtil;
 public class GroupMemberManageExAdapter extends BaseExpandableListAdapter{
 	public ArrayList<UserGroupInfo> list;
 	private Context context = null;
+	private List<String> deleteList;
 
 	public GroupMemberManageExAdapter(ArrayList<UserGroupInfo> list, Context context) {
 		super();
 		this.list = list;
 		this.context = context;
+		deleteList = new LinkedList<String>();
+	}
+
+	public List<String> getDeleteList() {
+		return deleteList;
+	}
+	
+	public void clear(){
+		deleteList.clear();
 	}
 
 	@Override
@@ -39,12 +53,25 @@ public class GroupMemberManageExAdapter extends BaseExpandableListAdapter{
 		MemberManageChildItemView view;
 		if (convertView == null) {
 			view = new MemberManageChildItemView(context) ;
+			view.tvDelete.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					deleteList.add(list.get(groupPosition).list.get(childPosition)._id);
+					list.get(groupPosition).list.remove(childPosition);
+					notifyDataSetChanged();
+				}
+			});
 			convertView = view;
 			convertView.setTag(view);
 		}else{
 			view = (MemberManageChildItemView) convertView.getTag();
 		}
 		view.setData(list.get(groupPosition).list.get(childPosition));
+		if(groupPosition == 2){
+			view.delete.setVisibility(View.VISIBLE);
+		}else{
+			view.delete.setVisibility(View.INVISIBLE);
+		}
 		return convertView;
 	}
 

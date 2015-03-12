@@ -1,10 +1,20 @@
 package com.guotion.sicilia.ui;
 
+import java.util.List;
+
+import com.google.gson.Gson;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
+import com.guotion.sicilia.bean.net.ReportResponse;
+import com.guotion.sicilia.bean.net.SignatureHistory;
+import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
+import com.guotion.sicilia.im.ChatServer;
 import com.guotion.sicilia.im.constant.ChatServerConstant;
+import com.guotion.sicilia.im.util.AccountManager;
+import com.guotion.sicilia.ui.dialog.InputSingleDialog;
 import com.guotion.sicilia.util.PreferencesHelper;
 import com.guotion.sicilia.util.UISkip;
 
@@ -16,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class OtherInfoActivity extends Activity{
 	private ImageView backImageView;
@@ -32,6 +43,7 @@ public class OtherInfoActivity extends Activity{
 	private TextView emailTextView;
 	private TextView preferenceTextView;
 	private TextView signatureTextView;
+	private TextView reportTextView;
 	
 	TextView textView1;
 	TextView textView2;
@@ -45,16 +57,23 @@ public class OtherInfoActivity extends Activity{
 	
 	LinearLayout top;
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_others_info);
-		
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(OtherInfoActivity.this);
 		initView();
 		initData();
 		initListener();
 	}
-
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(OtherInfoActivity.this);
+		super.onDestroy();
+	}
 	private void initView(){
 		backImageView = (ImageView)findViewById(R.id.imageView_others_info_back);
 		userNameTextView = (TextView)findViewById(R.id.textView_other_info_suerName);
@@ -70,6 +89,7 @@ public class OtherInfoActivity extends Activity{
 		emailTextView = (TextView)findViewById(R.id.tv_other_info_email);
 		preferenceTextView = (TextView)findViewById(R.id.tv_other_info_preference);
 		signatureTextView = (TextView)findViewById(R.id.tv_other_info_signature);
+		reportTextView = (TextView)findViewById(R.id.tv_userInfo_report);
 		
 		textView1 = (TextView)findViewById(R.id.tv_userInfo_userName);
 		textView2 = (TextView)findViewById(R.id.tv_userInfo_family);
@@ -87,7 +107,7 @@ public class OtherInfoActivity extends Activity{
 	
 	private void initData() {
 		if(AppData.OTHER_USER != null){
-			userNameTextView.setText(AppData.OTHER_USER.getUserName());
+			userNameTextView.setText(AppData.OTHER_USER.getNickName());
 			nickNameTextView.setText(AppData.OTHER_USER.getNickName());
 			familyTextView.setText(AppData.OTHER_USER.getAttribution());
 			familyPositionTextView.setTag(AppData.OTHER_USER.getJob());
@@ -99,7 +119,11 @@ public class OtherInfoActivity extends Activity{
 			/**
 			 * 不确定Signature类型是SignatureHistory，还是String
 			 */
-			signatureTextView.setText(AppData.OTHER_USER.getSignature()+"");
+			Gson gson = new Gson();
+			SignatureHistory signatureHistory = gson.fromJson(AppData.OTHER_USER.getSignature()+"",SignatureHistory.class);
+			if (signatureHistory != null && signatureHistory.getContent() != null){
+				signatureTextView.setText(signatureHistory.getContent());
+			}
 			String imgUrl = AppData.OTHER_USER.headPhoto;
 			if(imgUrl != null && !imgUrl.equals("")){
 				Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
@@ -169,19 +193,55 @@ public class OtherInfoActivity extends Activity{
 				finish();
 			}
 		});
-		
 		userNameTextView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				finish();
 			}
 		});
-		
 		cloudTextView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				UISkip.skip(false, OtherInfoActivity.this, UserCloudsActivity.class);
 			}
 		});
+		reportTextView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InputSingleDialog inputSingleDialog = new InputSingleDialog(OtherInfoActivity.this) {
+					@Override
+					public void clickSure(String content) {
+						Toast.makeText(OtherInfoActivity.this, "系统会尽快处理", Toast.LENGTH_SHORT).show();
+						report(content);
+					}
+				};
+				inputSingleDialog.setHint("请输入举报原因");
+				inputSingleDialog.show();
+			}
+		});
+	}
+	/**
+	 * 举报内容格式：[举报人昵称]([举报人id])举报用户[被举报人昵称]([被举报人id]),原因:[举报原因]
+	 * 
+	 */
+	private void report(final String content){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					User u = AppData.getUser(OtherInfoActivity.this);
+					List<ReportResponse> list = new AccountManager().reportSomeBody(u._id);
+					for(ReportResponse info : list){
+						String reportContent = u.nickName+"("+u._id+")举报用户"+AppData.OTHER_USER.nickName+"("+AppData.OTHER_USER._id+"),原因:"+content;
+						ChatServer.getInstance().getChat().sendP2PMessage(u._id, u.userName, info.usr, reportContent);
+//						ChatServer.getInstance().getChat().sendGroupMessage(info.channel, u.userName, info.user, u._id, reportContent);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 }

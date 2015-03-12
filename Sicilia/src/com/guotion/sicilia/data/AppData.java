@@ -34,6 +34,8 @@ public class AppData {
 	public static final int THEME_BLUE = 2;
 	public static final int THEME_FEMALE = 3;
 	
+	public static ChatItem chatItem = null;
+	
 	public static User USER = null;
 	public static User OTHER_USER = null;
 	
@@ -59,6 +61,9 @@ public class AppData {
 	public static User tempuser;
 	public static CloudEvent tempCloudEvent;
 	public static Activity tempActivity;
+	public static List<String> tempGroupMembers;
+	
+	public static boolean isQuitOrDismiss = false;
 	
 	/**
 	 * 得到User数据
@@ -185,7 +190,18 @@ public class AppData {
 				return userList.get(i);
 			}
 		}
+		if(USER != null && userId.equals(USER._id)){
+			return USER;
+		}
 		return null;
+	}
+	public static void deleteUser(String userId){
+		for(int i=0;i<userList.size();i++){
+			if(userId.equals(userList.get(i)._id)){
+				userList.remove(i);
+				break;
+			}
+		}
 	}
 	public static ConversationInfo getConversation(String userIdOrGroupId){
 		for(ConversationInfo conversationInfo : conversationList){
@@ -195,4 +211,30 @@ public class AppData {
 		}
 		return null;
 	}
+	public static ChatGroup getChatGroup(String groupId){
+		for(ChatGroup chatGroup:chatGroupList){
+			if(chatGroup._id.equals(groupId)){
+				return chatGroup;
+			}
+		}
+		return null;
+	}
+	public static void clear(){
+		userList.clear();
+		chatGroupList.clear();
+		activityList.clear();
+		cloudEventList.clear();
+		aNotificationList.clear();
+		conversationList.clear();
+		chatMap.clear();
+		tempP2pChatList.clear();
+		tempGroupChatList.clear();
+		lastReadMap.clear();
+	}
+//	public static void loginClear(){
+//		logoutClear();
+//	}
+//	public static void logoutClear(){
+//		
+//	}
 }

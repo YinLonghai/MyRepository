@@ -79,7 +79,7 @@ public class ExpressionUtil {
 		return spannableString;
 	}
 	// 处理图片
-	public static SpannableString dealImg(final Context context,String str,final String thumbnaiPath ,final String imgPath) {
+	public static SpannableString dealImg(final Context context,final String str,final String thumbnaiPath ,final String imgPath) {
 //		SpannableString spannableString = new SpannableString(str);
 //		ImageSpan imageSpan = new ImageSpan(BitmapFactory.decodeFile(imgPath));
 //		spannableString.setSpan(imageSpan, 0, str.length(),Spanned.SPAN_INCLUSIVE_EXCLUSIVE); // 将该图片替换字符串中规定的位置中
@@ -105,7 +105,7 @@ public class ExpressionUtil {
 				}else{//System.out.println(imgPath);
 					if(imgPath != null && !imgPath.equals("")){
 						Bitmap bitmap = LocalImageCache.get().loadImageBitmap(imgPath);
-						if(bitmap != null){
+						if(bitmap != null){//System.out.println("str=="+str);
 							imgReplaceString(spannableString,AndroidFileUtils.zoomIn(bitmap, 480, 480),start,end);
 							return ;
 						}

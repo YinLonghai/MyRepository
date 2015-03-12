@@ -42,14 +42,9 @@ public interface MessageListener {
      *
      */
     public void notifyReceiveSystemMessage();
-
-
-
-
-
+    
+    /**
+     * 收到自己发送的消息返回的chatItem
+     */
+    public void notifyReceiveMineMessage(ChatItem item);
 }
-
-
-
-
-

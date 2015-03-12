@@ -6,6 +6,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -87,21 +88,29 @@ public class AudioPlayer {
     	if(!audio.exists())
     		return;
 		try {
-			//System.out.print("start play..........");
+			System.out.print("start play..........");
 			mediaPlayer.reset();//把各项参数恢复到初始状态
 			mediaPlayer.setDataSource(path);
 			mediaPlayer.setLooping(false);
 			mediaPlayer.prepare();//进行缓冲
 			mediaPlayer.setOnPreparedListener(new PrepareListener(position));
 			mediaPlayer.setOnCompletionListener(new OnCompletionListener(){
-
 				@Override
-				public void onCompletion(MediaPlayer mp) {
+				public void onCompletion(MediaPlayer mp) {System.out.print("stop play..........");
 					//onDestroy();
 					if(audioplayerListener != null)
 						audioplayerListener.finished();
 				}
 				
+			});
+			mediaPlayer.setOnErrorListener(new OnErrorListener() {
+				@Override
+				public boolean onError(MediaPlayer mp, int what, int extra) {
+					// TODO Auto-generated method stub
+					if(audioplayerListener != null)
+						audioplayerListener.onException(new Exception("出现未知错误"));
+					return false;
+				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,20 +144,20 @@ public class AudioPlayer {
 			if(position>0) mediaPlayer.seekTo(position);
 			if(audioplayerListener != null){
 				audioplayerListener.onPrepared(duration);
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						int currentPosition = 0;
-						while(true){
-							if(!mediaPlayer.isPlaying()){
-								onDestroy();
-								return;
-							}
-							currentPosition = mediaPlayer.getCurrentPosition();
-							audioplayerListener.onPlaying(currentPosition);
-						}
-					}
-				}).start();
+//				new Thread(new Runnable() {
+//					@Override
+//					public void run() {
+//						int currentPosition = 0;
+//						while(true){
+//							if(!mediaPlayer.isPlaying()){
+//								onDestroy();
+//								return;
+//							}
+//							currentPosition = mediaPlayer.getCurrentPosition();
+//							audioplayerListener.onPlaying(currentPosition);
+//						}
+//					}
+//				}).start();
 			}
 			mediaPlayer.start();//开始播放
 		}

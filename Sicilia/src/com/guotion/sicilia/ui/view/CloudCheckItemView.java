@@ -1,6 +1,7 @@
 package com.guotion.sicilia.ui.view;
 
 import com.google.gson.Gson;
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -20,7 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class CloudCheckItemView extends RelativeLayout{
-	private ImageView head;
+	private SimpleNetImageView head;
 	private TextView tvName;
 	private TextView tvDesc;
 	
@@ -38,7 +39,7 @@ public class CloudCheckItemView extends RelativeLayout{
 	}
 	private void initView(){
 		LayoutInflater.from(getContext()).inflate(R.layout.listview_item_cloud_check, this);
-		head = (ImageView) findViewById(R.id.imageView_head);
+		head = (SimpleNetImageView) findViewById(R.id.imageView_head);
 		tvName = (TextView) findViewById(R.id.textView_name);
 		tvDesc = (TextView) findViewById(R.id.textView_desc);
 	}
@@ -47,6 +48,7 @@ public class CloudCheckItemView extends RelativeLayout{
 		this.headPath = headPath;
 		tvName.setText(name);
 		tvDesc.setText(desc);
+		head.setImageResource(R.drawable.head_m);
 	}
 	public void setUser(User user) {
 		this.user = user;
@@ -60,9 +62,11 @@ public class CloudCheckItemView extends RelativeLayout{
 	}
 	public void initNetImg(){
 		if(headPath != null && !headPath.equals("")){
-			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+headPath.substring(headPath.lastIndexOf("/")));
+			String cachePath = CacheUtil.avatarCachePath+headPath.substring(headPath.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
 			if(bitmap == null){
-				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+headPath, head, R.drawable.head_m, R.drawable.head_m);
+				head.loadImage(ChatServerConstant.URL.SERVER_HOST+headPath, cachePath, R.drawable.head_m);
+//				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+headPath, head, R.drawable.head_m, R.drawable.head_m);
 			}else{
 				head.setImageBitmap(bitmap);
 			}

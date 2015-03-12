@@ -3,6 +3,8 @@ package com.guotion.sicilia.im.listener;
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
 import io.socket.SocketIOException;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.guotion.sicilia.bean.net.ChatGroup;
 import com.guotion.sicilia.bean.net.ChatItem;
@@ -10,6 +12,7 @@ import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.im.Chat;
 import com.guotion.sicilia.im.ChatServer;
 import com.guotion.sicilia.im.util.GsonTransferUtil;
+
 import org.json.JSONObject;
 
 /**
@@ -41,6 +44,7 @@ public class DefaultIOCallback implements IOCallback {
 
 	@Override
 	public void onMessage(String data, IOAcknowledge ack) {
+		Log.i("------------>onMessage = ", data);
 		if (messageListener == null)
 			return;
 		ChatItem chatItem = null;
@@ -56,6 +60,8 @@ public class DefaultIOCallback implements IOCallback {
 			} else if (jsonObject.has("read")) { // 收到“消息已读的反馈”消息
 				chatItem = gson.fromJson(jsonObject.getString("msg"),ChatItem.class);
 				messageListener.notifyMessageReaded(chatItem);
+			}else if (jsonObject.has("reSubscribe")) { // 收到“消息已读的反馈”消息
+				ChatServer.getInstance().getChat().sendSubscribe(userId);//.relogin();
 			} else {
 				String userId;
 				User user;
@@ -63,6 +69,10 @@ public class DefaultIOCallback implements IOCallback {
 				chatItem.setChatGroup(jsonObject.getString("chatGroup"));
 				chatItem.setChatHistory(jsonObject.getString("chatHistory"));
 				chatItem.setUser(jsonObject.getString("user"));
+				String a = new Gson().toJson(chatItem);
+				Log.i("------------>收到消息反馈chatItem = ", a);
+				//收到发送消息后服务器返回的消息
+				messageListener.notifyReceiveMineMessage(chatItem);
 				
 				try{
 					user = gson.fromJson(jsonObject.getString("user"), User.class);
@@ -75,8 +85,9 @@ public class DefaultIOCallback implements IOCallback {
 				//User user = gson.fromJson(chatItem.getUser() + "", User.class);
 
 				ChatGroup chatGroup = gson.fromJson(chatItem.getChatGroup()+ "", ChatGroup.class);
-				if (userId.equals(this.userId)) // 收到的是自己发送的消息
+				if (userId.equals(this.userId)){ // 收到的是自己发送的消息
 					return;
+				}
 				if (chatGroup.getP2pid() != null && chatGroup.getP2pid().equals("")) {
 					System.out.println("收到组消息:" + chatItem.getMsg());
 					messageListener.notifyReceiveGroupMessage(chatItem,chatGroup.get_id(), userId); // 收到组消息

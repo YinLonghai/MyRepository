@@ -1,6 +1,7 @@
 package com.guotion.sicilia.ui.view;
 
 import com.google.gson.Gson;
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -21,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class CloudListItemView extends RelativeLayout{
-	private ImageView cloudHead;
+	private SimpleNetImageView cloudHead;
 	private TextView tvName;
 	private TextView tvDate;
 	
@@ -38,7 +39,7 @@ public class CloudListItemView extends RelativeLayout{
 	}
 	private void initView(){
 		LayoutInflater.from(getContext()).inflate(R.layout.listview_item_cloud, this);
-		cloudHead = (ImageView) findViewById(R.id.imageView_listview_cloud_head);
+		cloudHead = (SimpleNetImageView) findViewById(R.id.imageView_listview_cloud_head);
 		tvName = (TextView)findViewById(R.id.textView_listview_cloud_name);
 		tvDate = (TextView)findViewById(R.id.textView_listview_cloud_date);
 		TextBold.setTextBold(tvName);
@@ -51,6 +52,7 @@ public class CloudListItemView extends RelativeLayout{
 	private void initData(){
 		tvName.setText(cloudItemInfo.name);
 		tvDate.setText(cloudItemInfo.date);
+		cloudHead.setImageResource(R.drawable.head_s);
 	}
 	public void initNetImg(){
 		User user = new Gson().fromJson(cloudItemInfo.owner+"", User.class);
@@ -65,9 +67,11 @@ public class CloudListItemView extends RelativeLayout{
 		}else{
 			String imgUrl = user.headPhoto;
 			if(imgUrl != null && !imgUrl.equals("")){
-				Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
+				String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+				Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
 				if(bitmap == null){
-					AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cloudHead, R.drawable.head_s, R.drawable.head_s);
+//					AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cloudHead, R.drawable.head_s, R.drawable.head_s);
+					cloudHead.loadImage(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cachePath, R.drawable.head_s);
 				}else{
 					cloudHead.setImageBitmap(bitmap);
 				}

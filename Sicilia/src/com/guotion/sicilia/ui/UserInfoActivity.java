@@ -33,6 +33,7 @@ import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.ImgUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.net.SignatureHistory;
 import com.guotion.sicilia.bean.net.Tag;
 import com.guotion.sicilia.bean.net.User;
@@ -122,18 +123,21 @@ public class UserInfoActivity extends Activity  implements OnClickListener{
 		}
 	};
 
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_userinfo);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(UserInfoActivity.this);
 		initData();
 		initView();		
 		initListener();
 	}
 
-	
 	@Override
 	protected void onDestroy() {
+		siciliaApplication.removeActivity(UserInfoActivity.this);
 		Intent intent = new Intent();
 		intent.putExtra("user_updated", isUpdate);
 		setResult(RESULT_OK, intent);
@@ -229,7 +233,7 @@ public class UserInfoActivity extends Activity  implements OnClickListener{
 			@Override
 			public void run() {
 				try {
-					List<Tag> list = new TagManager().getTags("family");					
+					List<Tag> list = new TagManager().getTags("F");					
 					if (list != null) {
 						for (Tag tag : list) {
 							tags.addAll(tag.tags);

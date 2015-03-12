@@ -1,13 +1,10 @@
 package com.guotion.sicilia.ui.view;
 
-import java.io.File;
 import com.guotion.common.PictureBrowser.PictureBrowseView;
 import com.guotion.common.download.DownloadListener;
 import com.guotion.common.download.SimpleDownLoader2;
 import com.guotion.common.media.AudioPlayer;
 import com.guotion.common.media.AudioPlayerListener;
-import com.guotion.common.media.SongInfoUtils;
-import com.guotion.common.upload.UploaderListener;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.common.utils.MyUtil;
@@ -21,6 +18,7 @@ import com.guotion.sicilia.ui.listener.MessageFeedbackListener;
 import com.guotion.sicilia.util.ExpressionUtil;
 import com.guotion.sicilia.util.PreferencesHelper;
 import com.guotion.sicilia.util.UISkip;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -60,6 +58,7 @@ public class MsgRightView extends RelativeLayout {
 	
 	private ImageView rightHead;
 	private TextView rightContent;
+	private ImageView rightContentImg;
 	private ImageView playVoice;
 	private TextView rightAudiotime;
 	private TextView sign;
@@ -72,14 +71,14 @@ public class MsgRightView extends RelativeLayout {
 	private AnimationDrawable anim;
 	
 	private MessageFeedbackListenerImpl messageFeedbackListenerImpl;
-	private Chat chat = ChatServer.getInstance().getChat();
+	//private Chat chat ;
 	@SuppressLint("NewApi")
 	private MediaMetadataRetriever mediaMetadataRetriever=new MediaMetadataRetriever();
 	
 	Handler handler = new Handler() {
+		@SuppressLint("NewApi")
 		@Override
 		public void handleMessage(Message msg) {
-			
 			switch (msg.what) {
 			//处理发送图片消息
 			case IMG_UPLOADING:
@@ -98,12 +97,15 @@ public class MsgRightView extends RelativeLayout {
 			case AUDIO_UPLOAD_FINISHED:
 				break;
 			case AUDIO_UPLOAD_FAILED:
-				
 				break;
-				
 			case AUDIO_DOWNLOAD_FINISHED:
-				String filepath = msg.getData().getString("filepath");System.out.println("filepath="+filepath);
-				rightAudiotime.setText(new SongInfoUtils(context).getFileInfo(filepath)[0]+"`");
+				String audioPath = msg.getData().getString("filepath");//System.out.println("filepath="+filepath);
+				if (CacheUtil.getInstence().iSCacheFileExists(audioPath)) {
+					mediaMetadataRetriever.setDataSource(audioPath);
+					String second = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+					int sec = Integer.parseInt(second);
+					rightAudiotime.setText((sec/1000)+"`");
+				}
 				break;
 			//处理播放音频消息
 			case AUDIO_PLAY_PREPARED:
@@ -113,20 +115,21 @@ public class MsgRightView extends RelativeLayout {
 				anim.start();
 				break;
 			case AUDIO_PLAYING:
-				int position = msg.getData().getInt("position");
-				
 				break;
 			case AUDIO_PLAY_FINISHED:
 				isPlaying = false;
 				if (anim != null) {
-					anim.stop();
+					anim.stop();System.out.println("stop anim...");
+					anim = null;
 				}
 				playVoice.setBackgroundResource(R.drawable.playingvoice);
 				break;
 			case AUDIO_PLAY_FAILED:
+				Toast.makeText(context, "播放语音失败，请稍后再试", Toast.LENGTH_SHORT).show();
 				isPlaying = false;
 				if (anim != null) {
-					anim.stop();
+					anim.stop();System.out.println("stop anim...");
+					anim = null;
 				}
 				playVoice.setBackgroundResource(R.drawable.playingvoice);
 				break;
@@ -150,6 +153,7 @@ public class MsgRightView extends RelativeLayout {
 		LayoutInflater.from(getContext()).inflate(R.layout.view_msg_right, this);
 		rightHead = (ImageView) findViewById(R.id.imageView_msg_right_head);
 		rightContent = (TextView) findViewById(R.id.textView_msg_right_content);
+		rightContentImg = (ImageView) findViewById(R.id.imageView_msg_right_content_img);
 		playVoice = (ImageView) findViewById(R.id.imageView_msg_right_play);
 		rightAudiotime = (TextView) findViewById(R.id.textView_msg_right_audiotime);
 		sign = (TextView) findViewById(R.id.textView_msg_right_sign);
@@ -164,8 +168,24 @@ public class MsgRightView extends RelativeLayout {
 			e.printStackTrace();
 		}
 	}
-	@SuppressLint("NewApi")
 	private void initData(){
+		rightContent.setVisibility(View.VISIBLE);
+		rightContentImg.setVisibility(View.GONE);
+		playVoice.setVisibility(View.GONE);
+		rightAudiotime.setVisibility(View.GONE);
+		sign.setVisibility(View.VISIBLE);
+		initHead();
+		initContent();
+		String state = chatItemInfo.state;
+		if(state.equals("0")){
+			sign.setText("已发送");
+		}else if(state.equals("1")){
+			sign.setText("已送达");
+		}else if(state.equals("2")){
+			sign.setText("已读");
+		}
+	}
+	private void initHead(){
 		String imgUrl = chatItemInfo.userInfo.headPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){
 			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
@@ -177,14 +197,17 @@ public class MsgRightView extends RelativeLayout {
 		}else{
 			rightHead.setImageResource(R.drawable.head_orang);
 		}
-		
-		String type = chatItemInfo.mediaType;System.out.println("type="+type);
-		rightContent.setVisibility(View.VISIBLE);
-		playVoice.setVisibility(View.GONE);
-		rightAudiotime.setVisibility(View.GONE);
+	}
+	@SuppressLint("NewApi")
+	private void initContent(){
+		String type = chatItemInfo.mediaType;//System.out.println("type="+type);
 		if(type == null || type.equals("")){
 			rightContent.setText(chatItemInfo.msg);
-		}else if(MyUtil.isAudioFile(type)){System.out.println("AudioFile");
+		}else if(MyUtil.isAudioFile(type)){//System.out.println("AudioFile");
+			if(chatItemInfo.mediaUrl.endsWith(".caf")){
+				rightContent.setText("不支持的语音文件");
+				return ;
+			}
 			rightContent.setVisibility(View.GONE);
 			playVoice.setVisibility(View.VISIBLE);
 			rightAudiotime.setVisibility(View.VISIBLE);
@@ -194,7 +217,9 @@ public class MsgRightView extends RelativeLayout {
 			if (CacheUtil.getInstence().iSCacheFileExists(audioPath)) {
 				//rightAudiotime.setText(new SongInfoUtils(context).getFileInfo(audioPath)[0]+"`");
 				mediaMetadataRetriever.setDataSource(audioPath);
-				rightAudiotime.setText(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+				String second = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+				int sec = Integer.parseInt(second);
+				rightAudiotime.setText((sec/1000)+"`");
 			}else{
 				SimpleDownLoader2 simpleDownLoader2 = new SimpleDownLoader2();
 				simpleDownLoader2.downLoad(ChatServerConstant.URL.SERVER_HOST+chatItemInfo.mediaUrl, CacheUtil.chatAudioCachePath, fileName.substring(1),new DownloadListener() {
@@ -209,27 +234,28 @@ public class MsgRightView extends RelativeLayout {
 					}
 					@Override
 					public void finished(String filepath) {
-//						Message msg = new Message();
-//						msg.what = AUDIO_DOWNLOAD_FINISHED;
-//						msg.getData().putString("filepath", filepath);
-//						handler.sendMessage(msg);
+						Message msg = new Message();
+						msg.what = AUDIO_DOWNLOAD_FINISHED;
+						msg.getData().putString("filepath", filepath);
+						handler.sendMessage(msg);
 						System.out.println("语音下载成功=="+filepath);
 					}
 				});
 			}
 		}else if(MyUtil.isImgFile(type)){System.out.println("ImgFile");
+			rightContent.setVisibility(View.GONE);
+			rightContentImg.setVisibility(View.VISIBLE);
+			chatItemInfo.msg = "[图片]";
 			String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
 			path = path.replace(":", "_");//System.out.println("path="+CacheUtil.chatImageCachePath+path);
-			rightContent.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, CacheUtil.chatImageCachePath+path));
-		}
-		
-		String state = chatItemInfo.state;
-		if(state.equals("0")){
-			sign.setText("已发送");
-		}else if(state.equals("1")){
-			sign.setText("已送达");
-		}else if(state.equals("2")){
-			sign.setText("已读");
+//			rightContent.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, CacheUtil.chatImageCachePath+path));
+//			sign.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, CacheUtil.chatImageCachePath+path));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap( CacheUtil.chatImageCachePath+path);
+			if(bitmap == null){
+				rightContentImg.setImageResource(R.drawable.default_img);
+			}else{
+				rightContentImg.setImageBitmap(bitmap);
+			}
 		}
 	}
 	public void setChatItemInfo(ChatItem chatItemInfo) {
@@ -238,6 +264,12 @@ public class MsgRightView extends RelativeLayout {
 	}
 	private void initListener(){
 		rightContent.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				tvContentOnClick();
+			}
+		});
+		rightContentImg.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				tvContentOnClick();
@@ -259,166 +291,67 @@ public class MsgRightView extends RelativeLayout {
 	}
 	private void tvContentOnClick() {
 		//String filePath = CacheUtil.cachePath+"/sg.jpg";
-				if(MyUtil.isAudioFile(chatItemInfo.mediaType)){
-					if (isPlaying) {
-						return ;
-					}
-					String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
-					path = path.replace(":", "_");
-					String audioPath = CacheUtil.chatAudioCachePath+path;//System.out.println("audioPath="+audioPath);
-					if (audioPath == null) {
-						//
-					} else {
-						if (CacheUtil.getInstence().iSCacheFileExists(audioPath)) {
-							playAudio(audioPath);
-						} else {
-							//
-							Toast.makeText(context, "语音文件不存在", Toast.LENGTH_SHORT).show();
-						}
-					}
-				}else if(MyUtil.isImgFile(chatItemInfo.mediaType)){
-					String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
-					path = path.replace(":", "_");
-					String imgPath = CacheUtil.chatImageCachePath+path;
-					Dialog dialog = new Dialog(context,R.style.dialog_download_full_screen);
-					PictureBrowseView pictureBrowseView = new PictureBrowseView(context);
-					String url = ChatServerConstant.URL.SERVER_HOST+chatItemInfo.mediaUrl;
-					pictureBrowseView.setImageUrls(new String[]{url}, new String[]{imgPath}, null);
-					dialog.setContentView(pictureBrowseView);
-					dialog.show();
-
+		if(MyUtil.isAudioFile(chatItemInfo.mediaType)){
+			if (isPlaying) {
+				return ;
+			}
+			String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
+			path = path.replace(":", "_");
+			String audioPath = CacheUtil.chatAudioCachePath+path;//System.out.println("audioPath="+audioPath);
+			if (audioPath == null) {
+				//
+			} else {
+				if (CacheUtil.getInstence().iSCacheFileExists(audioPath)) {
+					playAudio(audioPath);
+				} else {
+					//
+					Toast.makeText(context, "语音文件不存在", Toast.LENGTH_SHORT).show();
 				}
-	}
-	private void showImage(String imagePath) {
-		
+			}
+		}else if(MyUtil.isImgFile(chatItemInfo.mediaType)){
+			String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
+			path = path.replace(":", "_");
+			String imgPath = CacheUtil.chatImageCachePath+path;
+			final Dialog dialog = new Dialog(context,R.style.dialog_download_full_screen);
+			PictureBrowseView pictureBrowseView = new PictureBrowseView(context);
+			String url = ChatServerConstant.URL.SERVER_HOST+chatItemInfo.mediaUrl;
+			pictureBrowseView.setImageUrls(new String[]{url}, new String[]{imgPath}, null);
+			pictureBrowseView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+			dialog.setContentView(pictureBrowseView);
+			dialog.show();
+
+		}
 	}
 	
 	private void playAudio(String filePath){System.out.println("play audio...");
-	audioPlayer = new AudioPlayer(context);
+	audioPlayer = new AudioPlayer(null);
 	audioPlayer.play(filePath, new AudioPlayerListener() {
 			@Override
 			public void onPrepared(int duration) {
-				Message msg = new Message();
-				msg.what = AUDIO_PLAY_PREPARED;
-				//msg.getData().putInt("duration", duration);
-				handler.sendMessage(msg);
+				handler.sendEmptyMessage(AUDIO_PLAY_PREPARED);
 			}
 			@Override
 			public void onPlaying(int position) {
-//				Message msg = new Message();
-//				msg.what = AUDIO_PLAYING;
-//				msg.getData().putInt("position", position);
-//				handler.sendMessage(msg);
 			}
 			@Override
 			public void onException(Exception e) {
-				Message msg = new Message();
-				msg.what = AUDIO_PLAY_FAILED;
-				handler.sendMessage(msg);
+				e.printStackTrace();
+				handler.sendEmptyMessage(AUDIO_PLAY_FAILED);
 			}
 			@Override
 			public void finished() {
-				Message msg = new Message();
-				msg.what = AUDIO_PLAY_FINISHED;
-				handler.sendMessage(msg);
+				handler.sendEmptyMessage(AUDIO_PLAY_FINISHED);
 			}
 			@Override
 			public void onDestroy(){
-//				Message msg = new Message();
-//				msg.what = AUDIO_PLAY_FINISHED;
-//				handler.sendMessage(msg);
 			}
 		});
-	}
-	private void uploadImg(){
-		//SimpleUploader2 uploader = new SimpleUploader2();
-		//File file = new File(chatMessagePartInfo.filePath);
-		File file = new File(CacheUtil.cachePath+"/sg.jpg");
-		if(file.exists()){
-			//uploader.uploadFile(file, new ImgUploaderListener());
-		}else{
-			//ivSign.setImageResource(resId);
-			Toast.makeText(context, "图片不存在", Toast.LENGTH_SHORT).show();
-		}
-	}
-	private void uploadAudio(){
-		//SimpleUploader2 uploader = new SimpleUploader2();
-//		File file = new File(audioPart.filePath);
-//		if(file.exists()){
-//			//uploader.uploadFile(file, new AudioUploaderListener());
-//		}else{
-//			//ivSign.setImageResource(resId);
-//			Toast.makeText(context, "图片不存在", Toast.LENGTH_SHORT).show();
-//		}
-	}
-	
-	private class ImgUploaderListener implements UploaderListener{
-		@Override
-		public void onPrepared(int fileSize) {
-			Message msg = new Message();
-			msg.what = IMG_PREPARED;
-			msg.getData().putInt("fileSize", fileSize);
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void onUploading(int size) {
-			Message msg = new Message();
-			msg.what = IMG_UPLOADING;
-			msg.getData().putInt("size", size);
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void finished(byte[] data) {
-			Message msg = new Message();
-			msg.what = IMG_FINISHED;
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void onException(Exception e) {
-			Message msg = new Message();
-			msg.what = IMG_FAILED;
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void onError() {
-			Message msg = new Message();
-			msg.what = IMG_FAILED;
-			handler.sendMessage(msg);
-		}
-	}
-	private class AudioUploaderListener implements UploaderListener{
-		@Override
-		public void onPrepared(int fileSize) {
-			Message msg = new Message();
-			msg.what = IMG_PREPARED;
-			msg.getData().putInt("fileSize", fileSize);
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void onUploading(int size) {
-			Message msg = new Message();
-			msg.what = IMG_UPLOADING;
-			msg.getData().putInt("size", size);
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void finished(byte[] data) {
-			Message msg = new Message();
-			msg.what = IMG_FINISHED;
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void onException(Exception e) {System.out.println(e.getMessage());
-			Message msg = new Message();
-			msg.what = IMG_FAILED;
-			handler.sendMessage(msg);
-		}
-		@Override
-		public void onError() {
-			Message msg = new Message();
-			msg.what = IMG_FAILED;
-			handler.sendMessage(msg);
-		}
 	}
 	
 	private final class MessageFeedbackListenerImpl implements MessageFeedbackListener{

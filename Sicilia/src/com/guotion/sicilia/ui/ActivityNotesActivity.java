@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.ActivityInfo;
 import com.guotion.sicilia.bean.net.ANotification;
 import com.guotion.sicilia.data.AppData;
@@ -41,13 +42,22 @@ public class ActivityNotesActivity extends Activity{
 	private ArrayList<ANotification> list;
 	private OnPullDownListener pullDownListener;
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_activity_note);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(ActivityNotesActivity.this);
 		initData();
 		initView();
 		initListener();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(ActivityNotesActivity.this);
+		super.onDestroy();
 	}
 	private void initData() {
 		list = new ArrayList<ANotification>();

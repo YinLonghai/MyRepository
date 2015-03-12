@@ -122,7 +122,9 @@ public class RegisterManageActivity extends Dialog {
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			if(msg.what == 2){
+			if(msg.what == 0){
+				dismiss();
+			}else if(msg.what == 2){
 				try {
 					frozenButton.setBackgroundResource(AppData.getThemeImgResId(theme, "thaw_background_seletor"));
 				} catch (Exception e) {
@@ -288,13 +290,15 @@ public class RegisterManageActivity extends Dialog {
 					public void clickSure() {
 						new Thread(new Runnable() {
 							public void run() {
-								try {
+								try {//System.out.println("aaa   ");
 									boolean success = accountManager.deleteUser(user._id, AppData.getUser(getContext())._id);
+//									System.out.println("aaa----"+success);
 									if(success){
+										AppData.deleteUser(user._id);
 										if(registerManageListener != null){
 											registerManageListener.getDeleteUser(user);
 										}
-										dismiss();
+										handler.sendEmptyMessage(0);
 									}else{
 										Message message = new Message();
 										message.what = 1;

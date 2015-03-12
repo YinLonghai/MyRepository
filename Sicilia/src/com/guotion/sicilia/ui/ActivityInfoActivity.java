@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.net.CloudEvent;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
@@ -39,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ActivityInfoActivity extends Activity{
 	private LinearLayout llBack;
@@ -73,13 +75,24 @@ public class ActivityInfoActivity extends Activity{
 	private int theme;
 	private com.guotion.sicilia.bean.net.Activity activity;
 	private String activityId;
+	private int selected = 0;
+	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_activity_info);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(ActivityInfoActivity.this);
 		initData();
 		initView();
 		initListener();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(ActivityInfoActivity.this);
+		super.onDestroy();
 	}
 	private void initData() {
 		if(getIntent().hasExtra("activityId")){
@@ -224,6 +237,7 @@ public class ActivityInfoActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				try {
+					selected = 0;
 					join.setBackgroundResource(AppData.getThemeImgResId(theme, "participation_on"));
 					wait.setBackgroundResource(AppData.getThemeImgResId(theme, "wait_off"));
 					reject.setBackgroundResource(AppData.getThemeImgResId(theme, "reject_off"));
@@ -237,6 +251,7 @@ public class ActivityInfoActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				try {
+					selected = 1;
 					join.setBackgroundResource(AppData.getThemeImgResId(theme, "participation_off"));
 					wait.setBackgroundResource(AppData.getThemeImgResId(theme, "wait_on"));
 					reject.setBackgroundResource(AppData.getThemeImgResId(theme, "reject_off"));
@@ -250,6 +265,7 @@ public class ActivityInfoActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				try {
+					selected = 2;
 					join.setBackgroundResource(AppData.getThemeImgResId(theme, "participation_off"));
 					wait.setBackgroundResource(AppData.getThemeImgResId(theme, "wait_off"));
 					reject.setBackgroundResource(AppData.getThemeImgResId(theme, "reject_on"));
@@ -259,29 +275,33 @@ public class ActivityInfoActivity extends Activity{
 				}
 			}
 		});
+		
 		gvPeople.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if(joinList.get(position).get_id().equals(AppData.getUser(ActivityInfoActivity.this).get_id())){
+			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+//				System.out.println("joinList="+joinList.size());
+//				System.out.println("rejectList="+rejectList.size());
+//				if(position > -1) return ;
+				if(selected == 0 && joinList.get(position).get_id().equals(AppData.getUser(ActivityInfoActivity.this).get_id())){
 					String warning = "您已参加该活动，要拒绝吗？";
 					WarningDialog WarningDialog = new WarningDialog(ActivityInfoActivity.this, warning, "取消", "拒绝") {
 						@Override
 						public void clickSure() {
+							rejectActivity(joinList.get(position));
 						}
-						
 						@Override
 						public void clickCancel() {
 						}
 					};
 					WarningDialog.show();
 				}
-				if(rejectList.get(position).get_id().equals(AppData.getUser(ActivityInfoActivity.this).get_id())){
+				if(selected == 2 && rejectList.get(position).get_id().equals(AppData.getUser(ActivityInfoActivity.this).get_id())){
 					String warning = "您已拒绝该活动，要参加吗？";
 					WarningDialog WarningDialog = new WarningDialog(ActivityInfoActivity.this, warning, "取消", "参加") {
 						@Override
 						public void clickSure() {
+							joinActivity(rejectList.get(position));
 						}
-						
 						@Override
 						public void clickCancel() {
 						}
@@ -349,6 +369,12 @@ public class ActivityInfoActivity extends Activity{
 				noCloud.setVisibility(View.GONE);
 				addUser(sharedPeople.get(sharedPeople.size()-1));
 				break;
+			case 3:
+				commonPeopleAdapter.notifyDataSetChanged();
+				break;
+			case 4:
+				Toast.makeText(ActivityInfoActivity.this, "更新参与情况失败", Toast.LENGTH_SHORT).show();
+				break;
 			}
 		}
 	};
@@ -361,6 +387,42 @@ public class ActivityInfoActivity extends Activity{
 					activity = new ActivityManager().getSingleActivity(activityId);
 					handler.sendEmptyMessage(1);
 				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	private void rejectActivity(final User user){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					new ActivityManager().updateMembers(activityId, user._id+":-1");
+					rejectList.add(user);
+					joinList.remove(user);
+					handler.sendEmptyMessage(3);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block 
+					handler.sendEmptyMessage(4);
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	private void joinActivity(final User user){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					new ActivityManager().updateMembers(activityId, user._id+":1");
+					joinList.add(user);
+					rejectList.remove(user);
+					handler.sendEmptyMessage(3);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block 
+					handler.sendEmptyMessage(4);
 					e.printStackTrace();
 				}
 			}

@@ -110,4 +110,8 @@
     <string name="T_99">自动登录失效,请重新登录</string>
     
     <string name="N_01">网络异常</string>
+    
+    
+    <string name="loginOtherPhone">你的帐号已在别的机器登录</string>
+    
 </resources>

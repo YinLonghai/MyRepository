@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 
 public class PictureBrowseAdapter extends PagerAdapter{
 
@@ -18,6 +19,7 @@ public class PictureBrowseAdapter extends PagerAdapter{
 	private String[] thumbnailPaths;
 	
 //	private DownloadListener downloadListener;
+	private OnClickListener onClickListener;
 	
 	public PictureBrowseAdapter(Context context, String[] imageUrls,String[] imagePaths,String[] thumbnailPaths,int position,DownloadListener downloadListener){
 		this.imageUrls = imageUrls;
@@ -52,6 +54,12 @@ public class PictureBrowseAdapter extends PagerAdapter{
 		if(thumbnailPaths != null)
 			views.get(position).setThumbnailPath(thumbnailPaths[position]);
 		views.get(position).setImageUrl(imageUrls[position]);System.out.println(imageUrls[position]);
+	}
+
+	public void setOnClickListener(OnClickListener onClickListener) {
+		for(NetImageView netImageView : views){
+			netImageView.setOnClickListener(onClickListener);
+		}
 	}
 
 	@Override

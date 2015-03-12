@@ -184,8 +184,18 @@
                     android:layout_alignBaseline="@+id/tv_other_info_signature"
                     android:layout_toLeftOf="@+id/tv_other_info_signature"
                     android:text="@string/signature" />
+                <TextView
+			        android:id="@+id/tv_userInfo_report"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/tv_other_info_signature"
+			        android:layout_centerHorizontal="true"
+			        android:textColor="@color/red"
+			        android:text="拉黑举报" />
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
+
+    
 
 </LinearLayout>

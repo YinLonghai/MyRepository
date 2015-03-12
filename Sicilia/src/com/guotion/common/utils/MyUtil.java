@@ -1,5 +1,7 @@
 package com.guotion.common.utils;
 
+import android.graphics.Bitmap;
+
 public class MyUtil {
 
 	/**
@@ -73,5 +75,21 @@ public class MyUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	public static Bitmap getbitmapFromUrl(String url,String savePath, String fileName){
+		Bitmap bitmap = QQUtil.getbitmap(url);
+		if(bitmap != null){
+			CacheUtil.getInstence().cacheImage(bitmap, savePath,fileName);
+		}
+		return bitmap;
+	}
+	public static Bitmap getbitmapFromUrl(String url,String cachePath){
+		Bitmap bitmap = QQUtil.getbitmap(url);
+		if(bitmap != null){
+			bitmap = ImgUtil.toRoundBitmap(bitmap);
+			CacheUtil.getInstence().cacheImage(bitmap, cachePath);
+		}
+		return bitmap;
 	}
 }

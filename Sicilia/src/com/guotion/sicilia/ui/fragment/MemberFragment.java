@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.guotion.sicilia.R;
 import com.guotion.sicilia.bean.net.ChatGroup;
 import com.guotion.sicilia.bean.net.User;
@@ -21,6 +23,7 @@ import com.guotion.sicilia.ui.view.GroupItemView;
 import com.guotion.sicilia.ui.view.PullDownView;
 import com.guotion.sicilia.ui.view.PullDownView.OnPullDownListener;
 import com.guotion.sicilia.ui.view.ScrollOverListView.ScrollListener;
+import com.guotion.sicilia.util.AndroidSystemUtils;
 import com.guotion.sicilia.util.PreferencesHelper;
 import com.guotion.sicilia.util.UISkip;
 
@@ -29,6 +32,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,12 +43,14 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Toast;
 /**
  * @function 联系人or聊天组
  *
@@ -100,6 +106,7 @@ public class MemberFragment extends Fragment {
 	 * 联系人adapter
 	 */
 	private ContactsAdapter lvAdapterContacts;
+	private ImageButton IvSearch;
 	
 	private RelativeLayout top;
 	private int theme;
@@ -113,15 +120,18 @@ public class MemberFragment extends Fragment {
 	
 	private CreateChatgroupDialog createChatgroupDialog = null;
 	
+	private boolean getUserData = false;
+	
 	private boolean isUser = true;
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch(msg.what){
-			case 1:System.out.println("user list"+lvDataContacts.size());
+			case 1://System.out.println("user list"+lvDataContacts.size());
 				lvAdapterContacts.notifyDataSetChanged();
+				getUserData = false;
 				break;
-			case 3:System.out.println("group list"+lvData.size());
+			case 3://System.out.println("group list"+lvData.size());
 				lvAdapter.notifyDataSetChanged();
 				break;
 			}
@@ -146,6 +156,9 @@ public class MemberFragment extends Fragment {
 			this.theme = theme;
 			updateTheme();
 		}
+		searchChatGroups.clear();
+		searchChatGroups.addAll(AppData.chatGroupList);
+		lvAdapter.notifyDataSetChanged();
 		super.onResume();
 	}
 
@@ -186,6 +199,7 @@ public class MemberFragment extends Fragment {
 		radioGroup = (RadioGroup) contentView.findViewById(R.id.radio_group01);
 		
 		addOff = (ImageView) contentView.findViewById(R.id.add_off_img);
+		IvSearch = (ImageButton) contentView.findViewById(R.id.img_search);
 
 		groupPullDownView = (PullDownView)contentView.findViewById(R.id.lv_main);
 		contactsPullDownView = (PullDownView)contentView.findViewById(R.id.lv_main_contacts);
@@ -206,18 +220,18 @@ public class MemberFragment extends Fragment {
 	private void updateTheme(){
 		try{
 			memberImgResId = AppData.getThemeImgResId(theme, "contract");//System.out.println(memberImgResId);
-			groupImgResId = AppData.getThemeImgResId(theme, "chat_groups");System.out.println(theme);
+			groupImgResId = AppData.getThemeImgResId(theme, "chat_groups");//System.out.println(theme);
 			switch(theme){
 			case AppData.THEME_MALE:
 				top.setBackgroundResource(AppData.getThemeColor(theme));
 				break;
-			case AppData.THEME_RED:System.out.println("THEME_RED");
+			case AppData.THEME_RED://System.out.println("THEME_RED");
 			top.setBackgroundResource(AppData.getThemeImgResId(theme, "bg_title"));
 				break;
 			case AppData.THEME_BLUE:
 				top.setBackgroundResource(AppData.getThemeImgResId(theme, "bg_title"));
 				break;
-			case AppData.THEME_FEMALE:System.out.println("THEME_FEMALE");
+			case AppData.THEME_FEMALE://System.out.println("THEME_FEMALE");
 				top.setBackgroundResource(AppData.getThemeColor(theme));
 				break;
 			}
@@ -242,6 +256,13 @@ public class MemberFragment extends Fragment {
 					}
 				});
 				createChatgroupDialog.show();
+			}
+		});
+		IvSearch.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				AndroidSystemUtils.closeInputSoftWindow(getActivity());
 			}
 		});
 		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -288,11 +309,12 @@ public class MemberFragment extends Fragment {
 
 					@Override
 					public void run() {
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+//						try {
+//							Thread.sleep(2000);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+						getUserList();
 						/** 关闭 刷新完毕 ***/
 						contactsPullDownView.RefreshComplete();//这个事线程安全的 可看源代码
 					}
@@ -307,11 +329,12 @@ public class MemberFragment extends Fragment {
 
 					@Override
 					public void run() {
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+//						try {
+//							Thread.sleep(2000);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+						getUserRelateGroups1();
 						/** 关闭 刷新完毕 ***/
 						groupPullDownView.RefreshComplete();//这个事线程安全的 可看源代码
 					}
@@ -349,7 +372,7 @@ public class MemberFragment extends Fragment {
 			}
 		});
 		
-		contactsPullDownView.setScrollListener(new ScrollListener() {
+		/*contactsPullDownView.setScrollListener(new ScrollListener() {
 			boolean isFirst = true;
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -408,17 +431,36 @@ public class MemberFragment extends Fragment {
 					}
 				}
 			}
-		});
+		});*/
 	}
 	
 	private void getUserList(){
+		if(getUserData) return ;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					List<User> list = new AccountManager().getUserList();System.out.println("user list"+list.size());
-					lvDataContacts.addAll(list);
-					searchUsers.addAll(list);
+					getUserData = true;
+					List<User> list = new AccountManager().getUserList();//System.out.println("user list"+list.size());
+					List<User> list1 = new LinkedList<User>();
+					for(int i=0;i<list.size();i++){
+						if(list.get(i)._id.equals(AppData.getUser(getActivity())._id)){
+							list.remove(i);
+							break;
+						}
+					}
+					list1.addAll(list);
+					for(int i=0;i<list1.size();i++){
+						if(list1.get(i).authorized.equals("0")){
+							list1.remove(i);
+							i--;
+						}
+					}
+					lvDataContacts.clear();
+					lvDataContacts.addAll(list1);
+					searchUsers.clear();
+					searchUsers.addAll(list1);
+					AppData.userList.clear();
 					AppData.userList.addAll(list);
 					handler.sendEmptyMessage(1);
 				} catch (Exception e) {
@@ -436,13 +478,25 @@ public class MemberFragment extends Fragment {
 			public void run() {
 				try {
 					List<ChatGroup> list = new ChatGroupManager().getUserRelateGroups(AppData.getUser(getActivity())._id);System.out.println("group list"+list.size());
-					for(ChatGroup chatGroup : list){
-						if(chatGroup.p2pid == null || chatGroup.p2pid.equals("")){
-							lvData.add(chatGroup);
-							searchChatGroups.add(chatGroup);
-							AppData.chatGroupList.add(chatGroup);
+					for(int i=0;i<list.size();i++){
+						ChatGroup chatGroup = list.get(i);
+						if(!TextUtils.isEmpty(chatGroup.p2pid)){
+							list.remove(i);
+							i--;
+//							lvData.add(chatGroup);
+//							searchChatGroups.add(chatGroup);
+//							AppData.chatGroupList.add(chatGroup);
 						}
 					}
+					//List<ChatGroup> list = new Gson().fromJson(AppData.getUser(getActivity()).chatGroups+"",new TypeToken<List<ChatGroup>>(){}.getType());
+					//System.out.println("MemberFragment----UserRelateGroups size = "+list.size());
+					list = handleChatGroupList(list);
+					lvData.clear();
+					lvData.addAll(list);
+					searchChatGroups.clear();
+					searchChatGroups.addAll(list);
+					AppData.chatGroupList.clear();
+					AppData.chatGroupList.addAll(list);
 					handler.sendEmptyMessage(3);
 				} catch (Exception e) {
 					handler.sendEmptyMessage(4);
@@ -450,6 +504,44 @@ public class MemberFragment extends Fragment {
 				}
 			}
 		}).start();
+	}
+	private void getUserRelateGroups1(){
+		try {
+			List<ChatGroup> list = new ChatGroupManager().getUserRelateGroups(AppData.getUser(getActivity())._id);System.out.println("group list"+list.size());
+			for(int i=0;i<list.size();i++){
+				ChatGroup chatGroup = list.get(i);
+				if(!TextUtils.isEmpty(chatGroup.p2pid)){
+					list.remove(i);
+					i--;
+				}
+			}
+			list = handleChatGroupList(list);
+			lvData.clear();
+			lvData.addAll(list);
+			searchChatGroups.clear();
+			searchChatGroups.addAll(list);
+			AppData.chatGroupList.clear();
+			AppData.chatGroupList.addAll(list);
+			handler.sendEmptyMessage(3);
+		} catch (Exception e) {
+			handler.sendEmptyMessage(4);
+			e.printStackTrace();
+		}
+	}
+	private List<ChatGroup> handleChatGroupList(List<ChatGroup> list){
+		List<ChatGroup> relateGroupList = new LinkedList<ChatGroup>();
+		String userId = AppData.getUser(getActivity())._id;
+//		Gson gson = new Gson();
+		for(ChatGroup chatGroup : list){
+			if(userId.equals(chatGroup.creator)){
+				relateGroupList.add(chatGroup);
+			}else if(chatGroup.admins.contains(userId)){
+				relateGroupList.add(chatGroup);
+			}else if(chatGroup.members.contains(userId)){
+				relateGroupList.add(chatGroup);
+			}
+		}
+		return relateGroupList;
 	}
 	
 	private void searchUser(String key){

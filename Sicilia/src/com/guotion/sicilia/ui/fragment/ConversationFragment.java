@@ -19,6 +19,7 @@ import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.util.AccountManager;
 import com.guotion.sicilia.im.util.ChatGroupManager;
 import com.guotion.sicilia.im.util.ChatItemManager;
+import com.guotion.sicilia.im.util.ChatItemSorter;
 import com.guotion.sicilia.im.util.OffineMessageManager;
 import com.guotion.sicilia.ui.ChatActivity;
 import com.guotion.sicilia.ui.GroupChatActivity;
@@ -41,6 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,28 +72,30 @@ public class ConversationFragment extends Fragment {
 
 	private Gson gson = new Gson();
 	private int theme;
-	
-	private HashMap<String,ChatGroup> groupMap = new HashMap<String, ChatGroup>();
-	
+
+	private HashMap<String, ChatGroup> groupMap = new HashMap<String, ChatGroup>();
+
 	private ReceiveP2PMessageListenerImpl receiveP2PMessageListenerImpl;
 	private ReceiveGroupMessageListenerImpl receiveGroupMessageListenerImpl;
-	
-	
+
+	private boolean getConversationData = false;
+
 	private final int USER_DONE = 2;
 	private final int GROUP_DONE = 3;
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			switch(msg.what){
+			switch (msg.what) {
 			case 1:
-				if(inforAdapter != null){
+				if (inforAdapter != null) {
 					inforAdapter.notifyDataSetChanged();
 				}
+				getConversationData = false;
 				break;
 			case GROUP_DONE:
 				break;
 			case USER_DONE:
-				//getUserRelateGroups();
+				// getUserRelateGroups();
 				break;
 			}
 		}
@@ -120,11 +124,12 @@ public class ConversationFragment extends Fragment {
 		LogUtil.i("onResume Conversation Fragment");
 		super.onResume();
 	}
-	private void handleTempChatItem(){
-		for(ChatItem chatItem :AppData.tempP2pChatList){
+
+	private void handleTempChatItem() {System.out.println("handleTempChatItem");
+		for (ChatItem chatItem : AppData.tempP2pChatList) {
 			updateP2PConversation(chatItem);
 		}
-		for(ChatItem chatItem :AppData.tempGroupChatList){
+		for (ChatItem chatItem : AppData.tempGroupChatList) {
 			updateGroupConversation(chatItem);
 		}
 	}
@@ -134,23 +139,25 @@ public class ConversationFragment extends Fragment {
 		LogUtil.i("onStart Conversation Fragment");
 		super.onStart();
 	}
-
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		AppData.imMessageToUIListener.cancleReceiveP2PMessageListeners(receiveP2PMessageListenerImpl);
-		AppData.imMessageToUIListener.cancleReceiveGroupMessageListeners(receiveGroupMessageListenerImpl);
-		super.onDestroy();
-	}
+//	@Override
+//	public void onDestroyView() {
+//		System.out.println("ConversationFragment onDestroyView");
+//		AppData.imMessageToUIListener.cancleReceiveP2PMessageListeners(receiveP2PMessageListenerImpl);
+//		AppData.imMessageToUIListener.cancleReceiveGroupMessageListeners(receiveGroupMessageListenerImpl);
+//		super.onDestroyView();
+//	}
 
 	private void initData() {
 		theme = new PreferencesHelper(getActivity()).getInt(AppData.THEME);
 		conversationList = new LinkedList<ConversationInfo>();
-		
-		receiveP2PMessageListenerImpl = new ReceiveP2PMessageListenerImpl();
-		AppData.imMessageToUIListener.registReceiveP2PMessageListeners(receiveP2PMessageListenerImpl);
-		receiveGroupMessageListenerImpl = new ReceiveGroupMessageListenerImpl();
-		AppData.imMessageToUIListener.registReceiveGroupMessageListeners(receiveGroupMessageListenerImpl);
+		if(receiveP2PMessageListenerImpl == null){
+			receiveP2PMessageListenerImpl = new ReceiveP2PMessageListenerImpl();
+			AppData.imMessageToUIListener.registReceiveP2PMessageListeners(receiveP2PMessageListenerImpl);
+		}
+		if(receiveGroupMessageListenerImpl==null){
+			receiveGroupMessageListenerImpl = new ReceiveGroupMessageListenerImpl();
+			AppData.imMessageToUIListener.registReceiveGroupMessageListeners(receiveGroupMessageListenerImpl);
+		}
 	}
 
 	private void initView(View contentView) {
@@ -158,18 +165,19 @@ public class ConversationFragment extends Fragment {
 		top = (RelativeLayout) contentView.findViewById(R.id.relativeLayout1);
 		pullDownView = (PullDownView) contentView.findViewById(R.id.ListView_infor);
 		pullDownView.setTvFreshIsVisible(true);
-		//显示并且可以使用头部刷新
+		// 显示并且可以使用头部刷新
 		pullDownView.setShowHeader();
 		lvInfor = pullDownView.getListView();
 		inforAdapter = new ConversationAdapter(getActivity(), conversationList);
 		lvInfor.setAdapter(inforAdapter);
-//		List<ChatGroup> list = gson.fromJson(AppData.USER.chatGroups+"",new TypeToken<List<ChatGroup>>(){}.getType());
-//		for(ChatGroup chatGroup : list){
-//			getMsgRelateHistory(chatGroup._id);
-//		}
-		if(AppData.conversationList.size() == 0){
-			getUserList();
-		}else{
+		// List<ChatGroup> list = gson.fromJson(AppData.USER.chatGroups+"",new
+		// TypeToken<List<ChatGroup>>(){}.getType());
+		// for(ChatGroup chatGroup : list){
+		// getMsgRelateHistory(chatGroup._id);
+		// }
+		if (AppData.conversationList.size() == 0) {
+			getConversationList_1();
+		} else {
 			conversationList.addAll(AppData.conversationList);
 		}
 		updateTheme();
@@ -205,11 +213,13 @@ public class ConversationFragment extends Fragment {
 				createChatgroupDialog.setCreateChatGroupListener(new CreateChatGroupListener() {
 					@Override
 					public void getChatGroup(ChatGroup chatGroup) {
+						groupMap.put(chatGroup._id, chatGroup);
+						AppData.chatGroupList.add(chatGroup);
 						ConversationInfo conversationInfo = new ConversationInfo();
 						conversationInfo.groupId = chatGroup._id;
 						conversationInfo.friendName = chatGroup.GroupName;
 						conversationInfo.GroupPhoto = chatGroup.GroupPhoto;
-						conversationList.add(0,conversationInfo);
+						conversationList.add(0, conversationInfo);
 						AppData.conversationList.add(conversationInfo);
 						handler.sendEmptyMessage(1);
 					}
@@ -218,80 +228,91 @@ public class ConversationFragment extends Fragment {
 			}
 		});
 		clickListener = new ConversationClickListener();
-		
+
 		pullDownListener = new ConversationPullDownListener();
 		pullDownView.setOnPullDownListener(pullDownListener);
 
 		itemClickListener = new ConversationItemClickListener();
-		lvInfor.setOnItemClickListener(itemClickListener);	
-		
+		lvInfor.setOnItemClickListener(itemClickListener);
+
 		itemLongClickListener = new ConversationItemLongClickListener();
-		
+
 		lvInfor.setOnItemLongClickListener(itemLongClickListener);
 		pullDownView.setScrollListener(new ScrollListener() {
 			boolean isFirst = true;
 			int childCount = 0;
+
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				// 当不滚动时 
-			     if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) { 
-			    	 for(int i=0;i<view.getChildCount();i++){
-			    		 View childView = view.getChildAt(i);
-			    		 if(childView instanceof ConversationItemView){
-			    			 ConversationItemView conversationItemView = (ConversationItemView) childView;
-				    		 conversationItemView.initNetImg();
-			    		 }
-			    	 }
-			     }
+				// 当不滚动时
+				if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+					for (int i = 0; i < view.getChildCount(); i++) {
+						View childView = view.getChildAt(i);
+						if (childView instanceof ConversationItemView) {
+							ConversationItemView conversationItemView = (ConversationItemView) childView;
+							conversationItemView.initNetImg();
+						}
+					}
+				}
 			}
+
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				if(view.getChildCount() > childCount){
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (view.getChildCount() > childCount) {
 					childCount = view.getChildCount();
 					isFirst = true;
 				}
-				if(!isFirst) return;
-				if(view.getChildCount()>0){
-					for(int i=0;i<view.getChildCount();i++){
+				if (!isFirst)
+					return;
+				if (view.getChildCount() > 0) {
+					for (int i = 0; i < view.getChildCount(); i++) {
 						View childView = view.getChildAt(i);
-			    		 if(childView instanceof ConversationItemView){
-			    			 ConversationItemView conversationItemView = (ConversationItemView) childView;
-				    		 conversationItemView.initNetImg();
-				    		 isFirst = false;
-			    		 }
-			    	 }
+						if (childView instanceof ConversationItemView) {
+							ConversationItemView conversationItemView = (ConversationItemView) childView;
+							conversationItemView.initNetImg();
+							isFirst = false;
+						}
+					}
 				}
 			}
 		});
 
 	}
+
 	ChatItemManager chatItemManager = new ChatItemManager();
-	//HashMap<String,List<ChatItem>> chatMap = new HashMap<String,List<ChatItem>>();
-	private void getMsgRelateHistory(final ChatGroup chatGroup){System.out.println("getMsgRelateHistory");
-	
+
+	// HashMap<String,List<ChatItem>> chatMap = new
+	// HashMap<String,List<ChatItem>>();
+	private void getMsgRelateHistory(final ChatGroup chatGroup) {
+		System.out.println("getMsgRelateHistory");
+
 		List<ChatItem> chatItemList;
 		try {
 			chatItemList = chatItemManager.getMsgListWithGroupId(chatGroup._id);
 			ConversationInfo conversation = new ConversationInfo();
-			if(chatItemList.size()>0){
-				conversation.content = chatItemList.get(chatItemList.size()-1).msg;
-				conversation.contentType = chatItemList.get(chatItemList.size()-1).mediaType;
+			if (chatItemList.size() > 0) {
+				conversation.content = chatItemList.get(chatItemList.size() - 1).msg;
+				conversation.contentType = chatItemList.get(chatItemList.size() - 1).mediaType;
 				conversation.unread_num = chatItemList.size();
-			}else return ;
-			if(chatGroup.p2pid != null && !chatGroup.p2pid.equals("")){
-				User u = userMap.get(chatItemList.get(0).user+"");
+			} else
+				return;
+			if (chatGroup.p2pid != null && !chatGroup.p2pid.equals("")) {
+				String userId = chatGroup.p2pid.substring(0, chatGroup.p2pid.indexOf("-"));
+				User u = userMap.get(userId);
+				if (u == null)
+					return;
 				conversation.friendName = u.userName;
 				conversation.GroupPhoto = u.headPhoto;
 				conversation.accountId = u._id;
 				AppData.chatMap.put(u._id, chatItemList);
-			}else{
+			} else {
 				conversation.friendName = chatGroup.GroupName;
 				conversation.GroupPhoto = chatGroup.GroupPhoto;
 				conversation.groupId = chatGroup._id;
 				AppData.chatMap.put(chatGroup._id, chatItemList);
 			}
-			conversationList.add(conversation);System.out.println("add  conversation");
+			conversationList.add(conversation);
+			System.out.println("add  conversation");
 			AppData.conversationList.add(conversation);
 			handler.sendEmptyMessage(1);
 		} catch (Exception e) {
@@ -300,19 +321,7 @@ public class ConversationFragment extends Fragment {
 		}
 	}
 
-//	private void updateConversation(int index, ConversationInfo conversationInfo) {
-//		if (index == -1) {
-//			conversationList.add(0, conversationInfo);
-//		} else if (index == 0) {
-//			conversationList.set(0, conversationInfo);
-//
-//		} else {
-//			conversationList.remove(index);
-//			conversationList.add(0, conversationInfo);
-//		}
-//	}
-	
-	private final class ConversationPullDownListener implements OnPullDownListener{
+	private final class ConversationPullDownListener implements OnPullDownListener {
 
 		@Override
 		public void onRefresh() {
@@ -325,15 +334,14 @@ public class ConversationFragment extends Fragment {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					
-					
+
 					/** 关闭 刷新完毕 ***/
-					pullDownView.RefreshComplete();//这个事线程安全的 可看源代码
+					pullDownView.RefreshComplete();// 这个事线程安全的 可看源代码
 				}
 			}).start();
 		}
-		
-	}//end of ConversationPullDownListener
+
+	}// end of ConversationPullDownListener
 
 	private final class ConversationClickListener implements OnClickListener {
 
@@ -348,15 +356,20 @@ public class ConversationFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			ConversationItemView conversationItemView = (ConversationItemView) view;
 			conversationItemView.updataNewInfor();
-			ConversationInfo conversationInfo = conversationList.get(position-1);
-			if(conversationInfo.accountId != null && !conversationInfo.accountId.equals("")){
+			ConversationInfo conversationInfo = conversationList.get(position - 1);
+			if (conversationInfo.accountId != null && !conversationInfo.accountId.equals("")) {
 				AppData.tempuser = userMap.get(conversationInfo.accountId);
 				UISkip.skip(false, getActivity(), ChatActivity.class);
-			}else if(conversationInfo.groupId != null && !conversationInfo.groupId.equals("")){
+			} else if (conversationInfo.groupId != null && !conversationInfo.groupId.equals("")) {
+				System.out.print("conversationInfo.groupId=="+conversationInfo.groupId);
 				AppData.tempChatGroup = groupMap.get(conversationInfo.groupId);
+				if(AppData.tempChatGroup==null){
+					AppData.tempChatGroup = AppData.getChatGroup(conversationInfo.groupId);
+				}
+				System.out.println("AppData.tempChatGroup=="+AppData.tempChatGroup);
 				UISkip.skip(false, getActivity(), GroupChatActivity.class);
 			}
-			
+
 		}
 
 	}// end of lvItemClickListener
@@ -364,6 +377,7 @@ public class ConversationFragment extends Fragment {
 	private final class ConversationItemLongClickListener implements OnItemLongClickListener {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View view, final int arg2, long arg3) {
+			System.out.println("onItemLongClick==="+arg2);
 			String warning = "您确实要删除该会话吗？";
 			String cancel = "取消";
 			String sure = "删除";
@@ -371,10 +385,11 @@ public class ConversationFragment extends Fragment {
 				@Override
 				public void clickCancel() {
 				}
+
 				@Override
 				public void clickSure() {
-					AppData.conversationList.remove(arg2);
-					conversationList.remove(arg2);
+					AppData.conversationList.remove(arg2-1);
+					conversationList.remove(arg2-1);
 					inforAdapter.notifyDataSetChanged();
 				}
 			};
@@ -382,34 +397,35 @@ public class ConversationFragment extends Fragment {
 			return false;
 		}
 	}// end of ConversationItemLongClickListener
-	
-	private final class ReceiveP2PMessageListenerImpl implements ReceiveP2PMessageListener{
+
+	private final class ReceiveP2PMessageListenerImpl implements ReceiveP2PMessageListener {
 		@Override
-		public void receiveP2PMessage(ChatItem chatItem) {
+		public void receiveP2PMessage(ChatItem chatItem) {System.out.println("ReceiveP2PMessageListener in ConversationFragment....."+receiveP2PMessageListenerImpl);
 			updateP2PConversation(chatItem);
 			handler.sendEmptyMessage(1);
 		}
 	}
-	private final class ReceiveGroupMessageListenerImpl implements ReceiveGroupMessageListener{
+
+	private final class ReceiveGroupMessageListenerImpl implements ReceiveGroupMessageListener {
 		@Override
-		public void receiveGroupMessage(ChatItem chatItem) {
+		public void receiveGroupMessage(ChatItem chatItem) {System.out.println("ReceiveGroupMessageListener in ConversationFragment");
 			updateGroupConversation(chatItem);
 			handler.sendEmptyMessage(1);
 		}
 	}
-	
-	private void updateP2PConversation(ChatItem chatItem){
+
+	private void updateP2PConversation(ChatItem chatItem) {
 		User user;
-		if(chatItem.mediaType == null || chatItem.mediaType.equals("")){
-			user = gson.fromJson(chatItem.user+"", User.class);
-		}else{
-			user = AppData.getUser(chatItem.user+"");
+		if (chatItem.mediaType == null || chatItem.mediaType.equals("")) {
+			user = gson.fromJson(chatItem.user + "", User.class);
+		} else {
+			user = AppData.getUser(chatItem.user + "");
 		}
 		chatItem.userInfo = user;
 		ConversationInfo conversation = null;
 		List<ChatItem> chatList;
-		for(int i=0;i<conversationList.size();i++){
-			if(user._id.equals(conversationList.get(i).accountId)){
+		for (int i = 0; i < conversationList.size(); i++) {
+			if (user._id.equals(conversationList.get(i).accountId)) {
 				conversation = conversationList.get(i);
 				conversation.content = chatItem.msg;
 				conversation.contentType = chatItem.mediaType;
@@ -418,7 +434,7 @@ public class ConversationFragment extends Fragment {
 				break;
 			}
 		}
-		if(conversation == null){
+		if (conversation == null) {
 			conversation = new ConversationInfo();
 			conversation.accountId = user._id;
 			conversation.content = chatItem.msg;
@@ -426,24 +442,34 @@ public class ConversationFragment extends Fragment {
 			conversation.friendName = user.userName;
 			conversation.GroupPhoto = user.headPhoto;
 			conversation.unread_num += 1;
-			AppData.conversationList.add(0,conversation);
+			AppData.conversationList.add(0, conversation);
 		}
 		conversationList.add(0, conversation);
 		chatList = AppData.chatMap.get(conversation.accountId);
-		if(chatList == null){
+		if (chatList == null) {
 			chatList = new ArrayList<ChatItem>();
 		}
 		chatList.add(chatItem);
 		AppData.chatMap.put(conversation.accountId, chatList);
 	}
-	private void updateGroupConversation(ChatItem chatItem){
-		User user = gson.fromJson(chatItem.user+"", User.class);
+
+	private void updateGroupConversation(ChatItem chatItem) {
+		User user;
+		ChatGroup group;
+		System.out.println("chatItem.chatGroup===" + chatItem.chatGroup);
+		if (chatItem.mediaType == null || chatItem.mediaType.equals("")) {
+			user = gson.fromJson(chatItem.user + "", User.class);
+
+		} else {
+			user = AppData.getUser(chatItem.user + "");
+			// group = AppData.getChatGroup(chatItem.chatGroup+"");
+		}
+		group = gson.fromJson(chatItem.chatGroup + "", ChatGroup.class);
 		chatItem.userInfo = user;
-		ChatGroup group = gson.fromJson(chatItem.chatGroup+"", ChatGroup.class);
 		ConversationInfo conversation = null;
 		List<ChatItem> chatList;
-		for(int i=0;i<conversationList.size();i++){
-			if(conversationList.get(i).groupId.equals(group._id)){
+		for (int i = 0; i < conversationList.size(); i++) {
+			if (group._id.equals(conversationList.get(i).groupId)) {
 				conversation = conversationList.get(i);
 				conversation.content = chatItem.msg;
 				conversation.contentType = chatItem.mediaType;
@@ -452,7 +478,7 @@ public class ConversationFragment extends Fragment {
 				break;
 			}
 		}
-		if(conversation == null){
+		if (conversation == null) {
 			conversation = new ConversationInfo();
 			conversation.groupId = group._id;
 			conversation.content = chatItem.msg;
@@ -460,95 +486,242 @@ public class ConversationFragment extends Fragment {
 			conversation.friendName = group.GroupName;
 			conversation.GroupPhoto = group.GroupPhoto;
 			conversation.unread_num += 1;
-			AppData.conversationList.add(0,conversation);
+			AppData.conversationList.add(0, conversation);
 		}
 		conversationList.add(0, conversation);
 		chatList = AppData.chatMap.get(conversation.groupId);
-		if(chatList == null){
+		if (chatList == null) {
 			chatList = new ArrayList<ChatItem>();
 		}
 		chatList.add(chatItem);
 		AppData.chatMap.put(conversation.groupId, chatList);
 	}
-	private List<ChatGroup> getUserRelateGroups(){
+
+	private List<ChatGroup> getUserRelateGroups() {
 		List<ChatGroup> relateList = new LinkedList<ChatGroup>();
 		try {
 			User user = AppData.getUser(getActivity());
 			List<ChatGroup> list = new ChatGroupManager().getUserRelateGroups(user._id);
-			for(ChatGroup chatGroup : list){
-				if(chatGroup.p2pid.endsWith(user._id)){
-					relateList.add(chatGroup);
+			for (ChatGroup chatGroup : list) {
+				if (chatGroup.p2pid.endsWith(user._id) && !chatGroup.p2pid.startsWith(user._id)) {// &&
+																									// !chatGroup.p2pid.startsWith(user._id)
+					relateList.add(chatGroup);// System.out.println("RelateGroup p2pid = "+chatGroup.p2pid);
 				}
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return relateList;
 	}
-	private HashMap<String,User> userMap = new HashMap<String,User>();
-	private void getUserList(){
+
+	private List<ChatGroup> getUserP2PGroups() {
+		List<ChatGroup> relateList = new LinkedList<ChatGroup>();
+		User user = AppData.getUser(getActivity());
+		try {
+			List<ChatGroup> list = new ChatGroupManager().getUserRelateGroups(user._id);
+			for (ChatGroup group : list) {
+				if (group.p2pid.startsWith(user._id) && !group.p2pid.endsWith(user._id)) {
+					relateList.add(group);
+				}
+				if (!group.p2pid.startsWith(user._id) && group.p2pid.endsWith(user._id)) {
+					relateList.add(group);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return relateList;
+	}
+
+	private HashMap<String, User> userMap = new HashMap<String, User>();
+
+	private void getConversationList_1() {
+		if (getConversationData)
+			return;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
+					getConversationData = true;
 					List<User> list = new AccountManager().getUserList();
-					for(User user : list){
+					for (User user : list) {
 						userMap.put(user._id, user);
 					}
-					//handler.sendEmptyMessage(USER_DONE);
-					List<ChatGroup> chatlist = new LinkedList<ChatGroup>();
-					List<ChatGroup> list1 = gson.fromJson(AppData.getUser(getActivity()).chatGroups+"",new TypeToken<List<ChatGroup>>(){}.getType());
-					chatlist.addAll(list1);
-					chatlist.addAll(getUserRelateGroups());
-					for(ChatGroup chatGroup : chatlist){
+					ChatItemManager itemManager = new ChatItemManager();
+					List<ChatGroup> chatGroups = new ArrayList<ChatGroup>();
+					// 1.先获取所有的p2p组
+					List<ChatGroup> p2pGroups = getUserP2PGroups();// getUserP2PGroups
+					for (ChatGroup chatGroup : p2pGroups) {
 						groupMap.put(chatGroup._id, chatGroup);
 					}
-					//HashMap<String,String> offineGroupMap = new HashMap<String,String>();
-					//Map<String, Integer> offineMap = getOffineMessage();
-					Map<String, List<ChatItem>> offineMap = offineMessageManager.getHaveLastReadOffineMessage(AppData.getUser(getActivity())._id);
-					for(Entry<String, List<ChatItem>> entry : offineMap.entrySet()){
-						chatlist.remove(groupMap.get(entry.getKey()));
-						handleOffineMessage(entry.getKey(),entry.getValue());
+					chatGroups.addAll(p2pGroups);
+					// 2.获取普通组
+					List<ChatGroup> commonGroups = gson.fromJson(AppData.getUser(getActivity()).chatGroups + "",
+							new TypeToken<List<ChatGroup>>() {
+							}.getType());
+					for (ChatGroup chatGroup : commonGroups) {
+						groupMap.put(chatGroup._id, chatGroup);
 					}
+					chatGroups.addAll(commonGroups);
 
-					for(ChatGroup chatGroup : chatlist){
-						getMsgRelateHistory(chatGroup);
+					for (ChatGroup group : chatGroups) {
+						ChatHistory chatHistory = null;
+						try {
+							chatHistory = itemManager.getMsgRelateHistory(group._id);
+							List<ChatItem> oneGroupItems = new ArrayList<ChatItem>();
+							List<ChatItem> chatItems = gson.fromJson(chatHistory.getChatItem() + "",
+									new TypeToken<List<ChatItem>>() {
+									}.getType());
+
+							System.out.println(group._id + "的消息条数是:" + chatItems.size());
+
+							oneGroupItems.addAll(chatItems);
+							while (chatItems.size() >= 20) {
+								chatItems = chatItemManager.getMsgAfterOneMsg(chatHistory._id,
+										chatItems.get(chatItems.size() - 1)._id);
+								oneGroupItems.addAll(chatItems);
+							}
+							System.out.println(group._id + "的总消息条数是:" + oneGroupItems.size());
+							handleOffineMessage(group._id, oneGroupItems);
+						} catch (Exception e) {
+							e.printStackTrace();
+							System.out.println("异常的groupId=" + group._id);
+						}
 					}
-					//AppData.conversationList.addAll(conversationList);
-					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					//handler.sendEmptyMessage(2);
+					// handler.sendEmptyMessage(2);
 					e.printStackTrace();
 				}
 				System.out.println("conversation load over...");
 			}
 		}).start();
 	}
-	private void handleOffineMessage(String chatGroupId,List<ChatItem> chatItemList){
+
+	private void getConversationList() {
+		if (getConversationData)
+			return;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					getConversationData = true;
+					List<User> list = new AccountManager().getUserList();
+					for (User user : list) {
+						userMap.put(user._id, user);
+					}
+					// handler.sendEmptyMessage(USER_DONE);
+					List<ChatGroup> chatlist = new LinkedList<ChatGroup>();
+					List<ChatGroup> list1 = gson.fromJson(AppData.getUser(getActivity()).chatGroups + "",
+							new TypeToken<List<ChatGroup>>() {
+							}.getType());
+					chatlist.addAll(list1);
+					chatlist.addAll(getUserRelateGroups());
+					for (ChatGroup chatGroup : chatlist) {
+						groupMap.put(chatGroup._id, chatGroup);
+					}
+					System.out.println("conversation load start...");
+					// HashMap<String,String> offineGroupMap = new
+					// HashMap<String,String>();
+					// Map<String, Integer> offineMap = getOffineMessage();
+					Map<String, List<ChatItem>> offineMap = offineMessageManager.getHaveLastReadOffineMessage(AppData
+							.getUser(getActivity())._id);
+					for (Entry<String, List<ChatItem>> entry : offineMap.entrySet()) {// System.out.println("aaa");
+						chatlist.remove(groupMap.get(entry.getKey()));
+						handleOffineMessage(entry.getKey(), entry.getValue());
+					}
+					for (ChatGroup chatGroup : chatlist) {
+						getMsgRelateHistory(chatGroup);
+					}
+					// AppData.conversationList.addAll(conversationList);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					// handler.sendEmptyMessage(2);
+					e.printStackTrace();
+				}
+				System.out.println("conversation load over...");
+			}
+		}).start();
+	}
+
+	private void handleOffineMessage(String chatGroupId, List<ChatItem> chatItemList) {// System.out.println("bbb");
 		ChatGroup chatGroup = groupMap.get(chatGroupId);
-		if(chatGroup == null) return ;
-		ChatItem chatItem = chatItemList.get(chatItemList.size()-1);
-		ConversationInfo conversationInfo = new ConversationInfo();
-		conversationInfo.GroupPhoto = chatItem.userInfo.headPhoto;
-		conversationInfo.friendName = chatItem.userInfo.userName;
-		conversationInfo.content = chatItem.msg;
-		conversationInfo.contentType = chatItem.mediaType;
-		conversationInfo.unread_num = chatItemList.size();
-		if(chatGroup.p2pid != null && !chatGroup.p2pid.equals("")){
-			conversationInfo.accountId = chatItem.user+"";
+		if (chatGroup == null)
+			return;
+		if (chatItemList.size() == 0)
+			return;
+		ChatItem chatItem = chatItemList.get(chatItemList.size() - 1);
+		ConversationInfo conversationInfo = null;
+		int unread_num = getUnReadNum(chatItemList);
+		if (unread_num == 0)
+			return;
+		if (chatGroup.p2pid != null && !chatGroup.p2pid.equals("")) {
+			String[] ids = TextUtils.split(chatGroup.p2pid, "-");
+			// String userId = chatGroup.p2pid.substring(0,
+			// chatGroup.p2pid.indexOf("-"));
+			User u = null;
+			String aUserId = AppData.getUser(getActivity())._id;
+			for (int i = 0; i < ids.length; i++) {
+				if (!aUserId.equals(ids[i])) {
+					u = userMap.get(ids[i]);
+					break;
+				}
+			}
+			if (u == null)
+				return;
+			for (int i = 0; i < conversationList.size(); i++) {
+				if (u._id.equals(conversationList.get(i).accountId)) {
+					conversationInfo = conversationList.get(i);
+					break;
+				}
+			}
+			if(conversationInfo == null){
+				conversationInfo = new ConversationInfo();
+			}
+			conversationInfo.friendName = u.userName;
+			conversationInfo.GroupPhoto = u.headPhoto;
+			conversationInfo.accountId = u._id;
 			AppData.chatMap.put(conversationInfo.accountId, chatItemList);
-		}else{
-			conversationInfo.groupId = chatItem.chatGroup+"";
+		} else {
+			for (int i = 0; i < conversationList.size(); i++) {
+				if (chatGroup._id.equals(conversationList.get(i).groupId)) {
+					conversationInfo = conversationList.get(i);
+					break;
+				}
+			}
+			if(conversationInfo == null){
+				conversationInfo = new ConversationInfo();
+			}
+			conversationInfo.friendName = chatGroup.GroupName;
+			conversationInfo.GroupPhoto = chatGroup.GroupPhoto;
+			conversationInfo.groupId = chatGroup._id;
 			AppData.chatMap.put(conversationInfo.groupId, chatItemList);
 		}
-		conversationList.add(conversationInfo);System.out.println("add off conversation");
+		conversationInfo.unread_num = unread_num;
+		conversationInfo.content = chatItem.msg;
+		conversationInfo.contentType = chatItem.mediaType;
+		conversationList.add(conversationInfo);
+		System.out.println("add off conversation");
 		AppData.conversationList.add(conversationInfo);
 		handler.sendEmptyMessage(1);
 	}
+
 	OffineMessageManager offineMessageManager = new OffineMessageManager();
-	
-	//private final class ConversationTask extends AsyncTask<Integer, Integer, Result>
+
+	private int getUnReadNum(List<ChatItem> list) {
+		int num = 0;
+		String userId = AppData.getUser(getActivity())._id;
+		for (ChatItem item : list) {
+			if (!userId.equals(item.user) && !item.state.equals("2")) {
+				num++;
+			}
+		}
+		return num;
+	}
+
+	// private final class ConversationTask extends AsyncTask<Integer, Integer,
+	// Result>
 }

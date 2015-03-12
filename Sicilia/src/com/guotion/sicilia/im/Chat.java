@@ -94,7 +94,7 @@ public class Chat {
             jsonObject.put("toUsers", receiverId);
             jsonObject.put("user", senderId);
             jsonObject.put("isP2P", "1");
-            jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()));
+            jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()));
             //jsonObject.put("msg", msg);
             socketIO.emit(ChatServerConstant.EVENT_NAME.POST_CHAT_EVENT, jsonObject);
     	}catch (Exception e) {
@@ -121,7 +121,7 @@ public class Chat {
             jsonObject.put("toUsers", receiversId);
             jsonObject.put("user", senderId);
             jsonObject.put("isP2P", "0");
-            jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()));
+            jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()));
             //jsonObject.put("msg", msg);
             socketIO.emit(ChatServerConstant.EVENT_NAME.POST_CHAT_EVENT, jsonObject);
     	}catch (Exception e) {
@@ -150,7 +150,7 @@ public class Chat {
             jsonObject.put("toUsers", receiversId);
             jsonObject.put("user", senderId);
             jsonObject.put("isP2P", "0");
-            jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()));
+            jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()));
             jsonObject.put("msg", msg);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -174,7 +174,7 @@ public class Chat {
         jsonObject.put("toUsers", receiverId);
         jsonObject.put("user", senderId);
         jsonObject.put("isP2P", "1");
-        jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()));
+        jsonObject.put("crc", new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()));
         jsonObject.put("msg", msg);
         socketIO.emit(ChatServerConstant.EVENT_NAME.CHAT_EVENT, jsonObject);
     }
@@ -187,7 +187,7 @@ public class Chat {
      * @param userId
      * @throws Exception
      */
-    private void sendSubscribe(String userId) {
+    public void sendSubscribe(String userId) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("channel", userId);
@@ -196,6 +196,18 @@ public class Chat {
         }
         socketIO.emit(ChatServerConstant.EVENT_NAME.SUBSCRIBE_EVENT, jsonObject);
     }
+    
+    public void unSubscribeMsg(String groupId){
+    	JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("channel", groupId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socketIO.emit(ChatServerConstant.EVENT_NAME.UNSUBSCRIBEMSG_EVENT, jsonObject);
+    }
+    
+    
 
 
 }

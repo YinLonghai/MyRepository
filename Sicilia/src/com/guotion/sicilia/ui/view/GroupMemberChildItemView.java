@@ -1,5 +1,6 @@
 package com.guotion.sicilia.ui.view;
 
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -17,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class GroupMemberChildItemView extends RelativeLayout{
-	private ImageView avatar;
+	private SimpleNetImageView avatar;
 	private TextView name;
 	
 	private User user;
@@ -33,7 +34,7 @@ public class GroupMemberChildItemView extends RelativeLayout{
 	}
 	private void initView(){
 		LayoutInflater.from(getContext()).inflate(R.layout.listview_item_child_groupmember, this);
-		avatar = (ImageView) findViewById(R.id.imageView_avatar);
+		avatar = (SimpleNetImageView) findViewById(R.id.imageView_avatar);
 		name = (TextView) findViewById(R.id.textView_name);
 	}
 
@@ -44,15 +45,31 @@ public class GroupMemberChildItemView extends RelativeLayout{
 	private void initData(){
 		String imgUrl = user.headPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){
-			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
 			if(bitmap == null){
-				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto,avatar,R.drawable.head_s,R.drawable.head_s);
+				avatar.setImageResource(R.drawable.head_s);
 			}else{
 				avatar.setImageBitmap(bitmap);
 			}
 		}else{
 			avatar.setImageResource(R.drawable.head_s);
 		}
-		name.setText(user.userName);
+		name.setText(user.nickName);
+	}
+	public void initNetImg(){
+		String imgUrl = user.headPhoto;
+		if(imgUrl != null && !imgUrl.equals("")){
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
+			if(bitmap == null){
+//				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto,avatar,R.drawable.head_s,R.drawable.head_s);
+				avatar.loadImage(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cachePath, R.drawable.head_s);
+			}else{
+				avatar.setImageBitmap(bitmap);
+			}
+		}else{
+			avatar.setImageResource(R.drawable.head_s);
+		}
 	}
 }

@@ -80,7 +80,10 @@ public class NetImageView extends RelativeLayout{
 			return ;
 		}
 		this.imageUrl = imageUrl;
-		fileNmae = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
+		if(fileNmae == null){
+			fileNmae = imageUrl.substring(imageUrl.lastIndexOf("/")+1);
+			fileNmae = fileNmae.replace(":", "_");
+		}
 		initImg();
 	}
 
@@ -165,4 +168,8 @@ public class NetImageView extends RelativeLayout{
 		this.downloadListener = downloadListener;
 	}
 	
+	@Override
+	public void setOnClickListener(OnClickListener l) {
+		imageView.setOnClickListener(l);
+	}
 }

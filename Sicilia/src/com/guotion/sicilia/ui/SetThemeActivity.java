@@ -1,6 +1,7 @@
 package com.guotion.sicilia.ui;
 
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.util.PreferencesHelper;
 
@@ -31,15 +32,23 @@ public class SetThemeActivity extends Activity{
 	private int theme;
 	private PreferencesHelper preferencesHelper;
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_theme);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(SetThemeActivity.this);
 		initData();
 		initView();
 		initListener();
 	}
-	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(SetThemeActivity.this);
+		super.onDestroy();
+	}
 	private void initData(){
 		preferencesHelper = new PreferencesHelper(SetThemeActivity.this);
 		theme = preferencesHelper.getInt(AppData.THEME);

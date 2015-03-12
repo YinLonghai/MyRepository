@@ -3,6 +3,8 @@ package com.guotion.sicilia.ui.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.guotion.sicilia.R;
 import com.guotion.sicilia.bean.InviteMember;
 import com.guotion.sicilia.bean.net.ChatGroup;
@@ -10,6 +12,7 @@ import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.util.AccountManager;
 import com.guotion.sicilia.im.util.ChatGroupManager;
+import com.guotion.sicilia.ui.GroupMemberManageActivity;
 import com.guotion.sicilia.ui.adapter.InviteMemberAdapter;
 import com.guotion.sicilia.util.PreferencesHelper;
 
@@ -28,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @function 邀请成员
@@ -73,28 +77,14 @@ public class InviteMembersDialog extends Dialog {
 	
 	private void initData() {
 		lvData = new ArrayList<User>();
-		if(AppData.userList.size() == 0){
-			
+		if(AppData.tempChatGroup == null){
+			handleList();
 		}else{
-			lvData.addAll(AppData.userList);
+			getSingleChatGroup();
 		}
 		lvAdapter = new InviteMemberAdapter(getContext(), lvData);
 		lvMain.setAdapter(lvAdapter);
-	}
-
-	private ArrayList<InviteMember> getListData() {
-		ArrayList<InviteMember> list = new ArrayList<InviteMember>();
-		list.add(new InviteMember("", "win"));
-		list.add(new InviteMember("", "Gray"));
-		list.add(new InviteMember("", "kk"));
-		list.add(new InviteMember("", "子建"));
-		list.add(new InviteMember("", "daisy"));
-		list.add(new InviteMember("", "李正彬"));
-		list.add(new InviteMember("", "qiumingyue"));
-		list.add(new InviteMember("", "llj"));
-		list.add(new InviteMember("", "Lincoln"));
-		list.add(new InviteMember("", "Jon"));
-		return list;
+		
 	}
 
 	private void initView() {
@@ -174,7 +164,11 @@ public class InviteMembersDialog extends Dialog {
 		public void handleMessage(Message msg) {
 			switch(msg.what){
 			case 1:
+				lvAdapter.setSize(lvData.size());
 				lvAdapter.notifyDataSetChanged();
+				break;
+			case 2:
+				Toast.makeText(getContext(), "网络异常", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
@@ -195,6 +189,64 @@ public class InviteMembersDialog extends Dialog {
 				}
 			}
 		}).start();
+	}
+	private void getSingleChatGroup(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					ChatGroup chatGroup = new ChatGroupManager().getSingleChatGroup(AppData.tempChatGroup._id);
+					handleChatGroup(chatGroup);
+					handler.sendEmptyMessage(1);
+					//AppData.tempChatGroup = chatGroup;
+				} catch (Exception e) {
+					handler.sendEmptyMessage(2);
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	private void handleChatGroup(ChatGroup chatGroup){
+		Gson gson = new Gson();
+		ArrayList<User> tempGroupMembers = new ArrayList<User>();
+		User creator = gson.fromJson(chatGroup.creator+"", User.class);//System.out.println("creator="+creator);
+		if(creator != null){
+			tempGroupMembers.add(creator);
+		}
+		List<User> adminlist = gson.fromJson(chatGroup.admins+"",new TypeToken<List<User>>(){}.getType());//System.out.println("adminlist="+adminlist);
+		if(adminlist != null){
+			tempGroupMembers.addAll(adminlist);
+		}
+		List<User> members = gson.fromJson(chatGroup.members+"",new TypeToken<List<User>>(){}.getType());//System.out.println("members="+members);
+		if(members != null){
+			tempGroupMembers.addAll(members);
+		}
+		for(User user : AppData.userList){
+			boolean b = false;
+			for(User u : tempGroupMembers){
+				if(user._id.equals(u._id)){//System.out.println(user.userName);
+					b = true;
+					break;
+				}
+			}
+			if(!b){
+				lvData.add(user);
+			}
+		}
+	}
+	private void handleList(){System.out.println(AppData.tempGroupMembers.size());
+		for(User user : AppData.userList){
+			boolean b = false;
+			for(String uId : AppData.tempGroupMembers){
+				if(user._id.equals(uId)){System.out.println(user.userName);
+					b = true;
+					break;
+				}
+			}
+			if(!b){
+				lvData.add(user);
+			}
+		}
 	}
 	
 	private InviteMembersListener inviteMembersListener;

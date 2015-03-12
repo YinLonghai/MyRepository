@@ -76,6 +76,9 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		@Override
 		public void handleMessage(Message msg) {
 			showToast(msg.obj + "");
+			if(msg.what == 1){
+				finish();
+			}
 			super.handleMessage(msg);
 		}
 	};
@@ -99,7 +102,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 			@Override
 			public void run() {
 				try {
-					List<Tag> list = new TagManager().getTags("family");					
+					List<Tag> list = new TagManager().getTags("F");					
 					if (list != null) {
 						for (Tag tag : list) {
 							tags.addAll(tag.tags);
@@ -269,11 +272,21 @@ public class RegisterActivity extends Activity implements OnClickListener{
 						User user = new AccountManager().createAccount(userName, password, birthday, lundarBtd, gender, nickName, email,
 								family, tel);
 						message.obj = "注册成功";
+						message.what = 1;
 						new AccountManager().bindDeviceWithUsername(new PreferencesHelper(RegisterActivity.this).getString("registration_id", ""), userName);
 					} catch (Exception e) {
-						e.printStackTrace();
+						e.printStackTrace();//System.out.println(e.getMessage());
+						if(e.getMessage().equals("1")){
+							message.obj = "注册成功";
+							message.what = 1;
+							handler.sendMessage(message);
+							return ;
+						}
 						String string = e.getMessage().replace(":", "_");
-						message.obj = getResources().getText(AppData.getStringResId(string));
+						int resId = AppData.getStringResId(string);
+						if(resId == 0) return ;
+						message.obj = getResources().getText(resId);
+						message.what = 2;
 					}
 					handler.sendMessage(message);
 				}

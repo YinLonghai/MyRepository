@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.net.CloudEvent;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
@@ -67,13 +68,22 @@ public class CloudCheckActivity extends Activity{
 		}
 	};
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cloud_check);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(CloudCheckActivity.this);
 		initData();
 		initView();
 		initListener();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(CloudCheckActivity.this);
+		super.onDestroy();
 	}
 	private void initData() {
 		userList = new ArrayList<User>();

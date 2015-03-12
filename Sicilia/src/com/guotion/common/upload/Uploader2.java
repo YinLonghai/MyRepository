@@ -74,9 +74,10 @@ public class Uploader2 {
 	        conn.setUseCaches(false);  
 	        conn.setRequestMethod("POST"); // Post方式  
 	        conn.setRequestProperty("connection", "keep-alive");  
-	        conn.setRequestProperty("Charsert", "UTF-8");  
+	        conn.setRequestProperty("Charset", "UTF-8");  
 	        conn.setRequestProperty("Content-Type", MULTIPART_FROM_DATA  
 	                + ";boundary=" + BOUNDARY);  
+	        //conn.setRequestProperty("Content-Length", ""+params.size()+files.size());
 	        // 首先组拼文本类型的参数  
 	        StringBuilder sb = new StringBuilder();  
 	        for (Map.Entry<String, String> entry : params.entrySet()) {  
@@ -102,7 +103,7 @@ public class Uploader2 {
 	                sb1.append(BOUNDARY);  
 	                sb1.append(LINEND);  
 	                sb1.append("Content-Disposition: form-data; name=\""+name+"\"; filename=\""  
-	                        + file.getKey() + "\"" + LINEND);  
+	                        + file.getValue().getName() + "\"" + LINEND);  
 	                sb1.append("Content-Type: multipart/form-data; charset="  
 	                        + CHARSET + LINEND);  
 	                sb1.append(LINEND);  

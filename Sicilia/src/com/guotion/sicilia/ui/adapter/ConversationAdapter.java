@@ -55,6 +55,7 @@ public class ConversationAdapter extends BaseAdapter{
 		}
 		conversationItemView.setConversationInfo(mMessageItems.get(position));
 		return convertView;
+		
 	}
 
 }

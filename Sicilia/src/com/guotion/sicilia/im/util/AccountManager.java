@@ -2,7 +2,10 @@ package com.guotion.sicilia.im.util;
 
 import android.annotation.SuppressLint;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.guotion.sicilia.bean.net.Device;
+import com.guotion.sicilia.bean.net.ReportResponse;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.im.constant.ChatServerConstant;
 import com.guotion.sicilia.util.LogUtil;
@@ -40,6 +43,7 @@ public class AccountManager {
      * @param mobile
      * @return 刚创建帐号 chatGroups是空数组
      * @throws Exception
+     * https://115.28.27.128:2014/User/Create?userName=xdy&passWord=123&birthday=2014-07-31&lunarBtd=11-11&gender=male&nickName=xdy&mail=1092852035%40qq.com&attribution=%3F%3F&mobile=18780106597
      */
 	public User createAccount(String userName, String passWord, String birthday, String lundarBtd,
                               String gender, String nickName, String mail, String attribution, String mobile) throws Exception{
@@ -153,7 +157,7 @@ public class AccountManager {
         StringBuilder url = new StringBuilder(ChatServerConstant.URL.SERVER_HOST + "/User/Delete");
         url.append("?");
         url.append("id_=" + id_ + "&");
-        url.append("admin=" +admin);
+        url.append("admin=" +admin);System.out.println(url.toString());
         byte[] result = RequestSender.requestByGet(url.toString());
         if(result == null)
         	throw new Exception(cusException);
@@ -345,6 +349,24 @@ public class AccountManager {
     public interface OnGetUserListener{
     	public void onGetUser(User user, String userJson);
     }
+    
+    /**
+     * 举报某人时使用来获取与这个组所有管理员的p2pid
+     * @param reporterId
+     * @return
+     * @throws Exception
+     */
+    public List<ReportResponse> reportSomeBody(String reporterId) throws Exception{
+    	StringBuilder url = new StringBuilder(ChatServerConstant.URL.SERVER_HOST+"/Abuse/report");
+    	url.append("?");
+    	url.append("reportVia="+reporterId);
+    	byte[] result = RequestSender.requestByGet(url.toString());
+    	if(result == null)
+    		throw new Exception(cusException);
+    	String responseData = new String(result);
+    	return new Gson().fromJson(responseData, new TypeToken<List<ReportResponse>>(){}.getType());
+    }
+
 }
 
 

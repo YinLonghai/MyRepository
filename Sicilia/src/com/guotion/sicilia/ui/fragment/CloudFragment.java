@@ -1,10 +1,13 @@
 package com.guotion.sicilia.ui.fragment;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gson.Gson;
 import com.guotion.sicilia.R;
 import com.guotion.sicilia.bean.net.CloudEvent;
+import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.util.CloudManager;
 import com.guotion.sicilia.ui.CloudCheckActivity;
@@ -60,6 +63,9 @@ public class CloudFragment extends Fragment {
 	private int listImgResId;
 	private int thumbImgResId;
 	private CloudDialog cloudDialog = null;
+	
+	private boolean getCloudData = false;
+	
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -67,6 +73,7 @@ public class CloudFragment extends Fragment {
 			case 1:
 				cloudListAdapter.notifyDataSetChanged();
 				cloudGridAdapter.notifyDataSetChanged();
+				getCloudData = false;
 				break;
 			}
 		}
@@ -285,15 +292,18 @@ public class CloudFragment extends Fragment {
 		cloudDialog.show();
 	}
 	private void getCloudList(){
+		if(getCloudData) return ;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					List<CloudEvent> lsit = new CloudManager().getCloudFiles();
+					getCloudData = true;
+					List<CloudEvent> list = new CloudManager().getCloudFiles();
+					list = handleList(list);
 					cloudList.clear();
-					cloudList.addAll(lsit);
+					cloudList.addAll(list);
 					AppData.cloudEventList.clear();
-					AppData.cloudEventList.addAll(lsit);
+					AppData.cloudEventList.addAll(list);
 					handler.sendEmptyMessage(1);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -302,6 +312,22 @@ public class CloudFragment extends Fragment {
 				}
 			}
 		}).start();
+	}
+	private List<CloudEvent> handleList(List<CloudEvent> list){
+		List<CloudEvent> cloudEventList = new LinkedList<CloudEvent>();
+		String userId = AppData.getUser(getActivity())._id;
+		Gson gson = new Gson();
+		for(CloudEvent cloudEvent : list){
+			if(cloudEvent.isPrivate.equals("0")){
+				cloudEventList.add(cloudEvent);
+			}else{
+				User owner = gson.fromJson(cloudEvent.owner+"", User.class);
+				if(owner._id.equals(userId)){
+					cloudEventList.add(cloudEvent);
+				}
+			}
+		}
+		return cloudEventList;
 	}
 	
 	public void addFile(String filePath){

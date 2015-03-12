@@ -42,7 +42,7 @@ public class TagManager {
 				ChatServerConstant.URL.SERVER_HOST + "/Tag/Update");
 		url.append("?");
 		url.append("id_=" + id + "&");
-		url.append("tags=" + URLEncoder.encode(tags, CHARSET));
+		url.append("tags=" + EncodingUtils.getString(tags.getBytes(), CHARSET));
 		byte[] result = RequestSender.requestByGet(url.toString());
 		if(result == null)
         	throw new Exception(cusException);

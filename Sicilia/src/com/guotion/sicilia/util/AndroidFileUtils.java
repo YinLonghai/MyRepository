@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.guotion.sicilia.constants.AndroidRequestCode;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -31,9 +29,7 @@ public class AndroidFileUtils {
 	 */
 	public static Uri openPicturesChooser(Activity activity, String imagePath, int x,
 			int y, int requestCode) {
-		Intent intent = new Intent();
-		intent.setType("image/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
+		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		File imageFile = new File(imagePath);
 		if (!imageFile.getParentFile().exists()) {
 			imageFile.getParentFile().mkdirs();
@@ -54,9 +50,7 @@ public class AndroidFileUtils {
 	 * @param activity
 	 */
 	public static void openPicturesChooser(Activity activity, int requestCode) {
-		Intent intent = new Intent();
-		intent.setType("image/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
+		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		activity.startActivityForResult(intent,	requestCode);		
 	}
 	
@@ -80,9 +74,7 @@ public class AndroidFileUtils {
 	 * @param activity
 	 */
 	public static void openFileChooser(Activity activity,int requestCode) {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
-		intent.setType("image/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
+		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI); 
 	    activity.startActivityForResult(Intent.createChooser(intent, "请选择文件管理器"), requestCode);
 	}
 		
@@ -130,79 +122,8 @@ public class AndroidFileUtils {
 		return imgPath;
 	}
 
-	/**
-	 * 
-	 * @param activity
-	 * @param imagePath
-	 * @param x
-	 *            裁剪长度
-	 * @param y
-	 *            裁剪宽度
-	 */
-//	public static Uri openCamera(Activity activity, String imagePath, int x,
-//			int y) {
-//		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//		File imageFile = new File(imagePath);
-//		if (!imageFile.getParentFile().exists()) {
-//			imageFile.getParentFile().mkdirs();
-//		}
-//		Uri imageUri = Uri.fromFile(imageFile);
-//		Uri imageUri = Uri.fromFile(imageFile);
-//		try {
-//			imageUri = Uri.parse(android.provider.MediaStore.Images.Media.insertImage(activity.getContentResolver(), imagePath, null, null));
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
-//		intent.putExtra("crop", "true");
-//		intent.putExtra("aspectX", x);// 裁剪框比例
-//		intent.putExtra("aspectY", y);
-//		intent.putExtra("outputX", x);// 输出图片大小
-//		intent.putExtra("outputY", y);
-//		activity.startActivityForResult(intent,
-//				AndroidRequestCode.REQ_CODE_CAMERA);
-//		return imageUri;
-//	}
 
-	public static void getCropImageIntent(Activity activity, Bitmap data, int x, int y) {
-		Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setType("image/*");
-        intent.putExtra("data", data);
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", x);
-        intent.putExtra("aspectY", y);
-        intent.putExtra("outputX", x);
-        intent.putExtra("outputY", y);
-        intent.putExtra("return-data", true);
-        activity.startActivityForResult(intent, AndroidRequestCode.REQ_CODE_CROP_PICTURES);
-	} 
-	
-	public static void getCropImageIntent(Activity activity, String imagePath, int x, int y) {
-		Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setType("image/*");       
-//        intent.putExtra("data",  BitmapFactory.decodeFile(imagePath));
-		File imageFile = new File(imagePath);
-		if (!imageFile.getParentFile().exists()) {
-			imageFile.getParentFile().mkdirs();
-		}
-        String uriString = null;
-		try {
-			uriString = android.provider.MediaStore.Images.Media.insertImage(activity.getContentResolver(), imagePath, imageFile.getName(), null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        intent.setData(Uri.parse(uriString));
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", x);
-        intent.putExtra("aspectY", y);
-        intent.putExtra("outputX", x);
-        intent.putExtra("outputY", y);
-        intent.putExtra("return-data", true);
-        activity.startActivityForResult(intent, AndroidRequestCode.REQ_CODE_CROP_PICTURES);
-	}
-	
+
 	/**
 	 * 
 	 * @param sourceFilePath

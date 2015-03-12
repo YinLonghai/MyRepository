@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
 import com.guotion.sicilia.bean.net.ANotification;
 import com.guotion.sicilia.bean.net.Activity;
+import com.guotion.sicilia.bean.net.ChatGroup;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.constant.ChatServerConstant;
@@ -65,6 +67,9 @@ public class ActivityFragment extends Fragment {
 	private Activity birthdayRemind;
 
 	private int theme;
+	
+	private boolean getActivityData = false;
+	private boolean getNoteData = false;
 
 	Handler handler = new Handler() {
 		@Override
@@ -72,25 +77,29 @@ public class ActivityFragment extends Fragment {
 			switch (msg.what) {
 			case 1:
 				handleNote();
+				getNoteData = false;
 				break;
 			case 3:
 				activityAdapter.notifyDataSetChanged();
-				if (birthdayRemind.creator != null && !birthdayRemind.creator.equals("")) {
-					User user = new Gson().fromJson(birthdayRemind.creator+"", User.class);
-					if(user == null) break ;
-					String imgUrl = user.headPhoto;
-					if(imgUrl != null && !imgUrl.equals("")){
-						Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
-						if(bitmap == null){
-							AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, ivHead, R.drawable.head_s, R.drawable.head_s);
+				if(birthdayRemind != null){
+					if (birthdayRemind.creator != null && !birthdayRemind.creator.equals("")) {
+						User user = new Gson().fromJson(birthdayRemind.creator+"", User.class);
+						if(user == null) break ;
+						String imgUrl = user.headPhoto;
+						if(imgUrl != null && !imgUrl.equals("")){
+							Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
+							if(bitmap == null){
+								AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, ivHead, R.drawable.head_s, R.drawable.head_s);
+							}else{
+								ivHead.setImageBitmap(bitmap);
+							}
 						}else{
-							ivHead.setImageBitmap(bitmap);
+							ivHead.setImageResource(R.drawable.head_s);
 						}
-					}else{
-						ivHead.setImageResource(R.drawable.head_s);
+						name.setText(user.userName);
+						desc.setText(user.birthday.substring(5) + " 就要生日啦");
 					}
-					name.setText(user.userName);
-					desc.setText(user.lunarBtd + " 就要生日啦");
+					getActivityData = false;
 				}
 				break;
 			}
@@ -146,7 +155,7 @@ public class ActivityFragment extends Fragment {
 		if (AppData.activityList.size() == 0) {
 			getActivityList();
 		} else {
-			handleList(AppData.activityList);
+			handleActivityList(AppData.activityList);
 		}
 	}
 
@@ -275,7 +284,9 @@ public class ActivityFragment extends Fragment {
 		ivHead.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				UISkip.skipToBirthdayRemindItemActivity(getActivity(), new Gson().fromJson(birthdayRemind.creator+"", User.class),birthdayRemind._id);
+				if(birthdayRemind != null){
+					UISkip.skipToBirthdayRemindItemActivity(getActivity(), new Gson().fromJson(birthdayRemind.creator+"", User.class),birthdayRemind._id);	
+				}
 			}
 		});
 		acticitysListView.setOnItemClickListener(new OnItemClickListener() {
@@ -289,10 +300,12 @@ public class ActivityFragment extends Fragment {
 	}
 
 	private void getNoteList() {
+		if(getNoteData) return ;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
+					getNoteData = true;
 					List<ANotification> list = new NoteManager()
 							.getANotifications();
 					noteList.addAll(list);
@@ -308,17 +321,20 @@ public class ActivityFragment extends Fragment {
 	}
 
 	private void getActivityList() {
+		if(getActivityData){
+			//System.out.println("getActivityList is runing");
+			return ;
+		}
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
+					getActivityData = true;
 					List<Activity> list = new ActivityManager().getActivities();
-					System.out.println("Activity size-" + list.size());
-					AppData.activityList.addAll(list);
+					//System.out.println("Activity size-" + list.size());
+					//AppData.activityList.addAll(list);
 					handleList(list);
-					if(birthdayRemind != null){
-						handler.sendEmptyMessage(3);
-					}
+					handler.sendEmptyMessage(3);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					handler.sendEmptyMessage(4);
@@ -329,14 +345,55 @@ public class ActivityFragment extends Fragment {
 	}
 	
 	private void handleList(List<Activity> list){
-		String now = DateUtil.getLongDate();
-		for (Activity activity : list) {
+		String now = DateUtil.getLongDate();System.out.println(now);
+		String userId = AppData.getUser(getActivity())._id;
+		Gson gson = new Gson();
+		for(Activity activity : list) {
 			if (activity.type.equals("B")) {
-				birthdayRemind = activity;
-			} else if(now.compareTo(activity.date)<0){
-				activitylist.add(0, activity);
+				if(birthdayRemind==null){
+					birthdayRemind = activity;
+				}
+				AppData.activityList.add(activity);
+			} else {
+				User creator = gson.fromJson(activity.creator+"", User.class);
+				if(userId.equals(creator._id)){//System.out.println(activity.name+"   "+creator.userName);
+					AppData.activityList.add(activity);
+					if(now.compareTo(activity.date)<0){System.out.println(activity.date);
+						activitylist.add(0, activity);
+					}
+				}else{//System.out.println("activity.members="+activity.members);
+					List<User> memberList = gson.fromJson(activity.members+"",new TypeToken<List<User>>(){}.getType());
+					for(User user : memberList){
+						if(userId.equals(user._id)){//System.out.println(activity.name+"   "+user.userName);
+							AppData.activityList.add(activity);
+							if(now.compareTo(activity.date)<0){System.out.println(activity.date);
+								activitylist.add(0, activity);
+							}
+							break;
+						}
+					}
+				}
 			}
 		}
+	}
+	private void handleActivityList(final List<Activity> list){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String now = DateUtil.getLongDate();
+				for(Activity activity : list) {
+					if (activity.type.equals("B") && birthdayRemind==null) {
+						birthdayRemind = activity;
+					}else {
+						if(now.compareTo(activity.date)<0){
+							activitylist.add(0, activity);
+						}
+					}
+				}
+				handler.sendEmptyMessage(3);
+			}
+		}).start();
 	}
 	private void handleNote(){
 		if (noteList.size() > 0) {

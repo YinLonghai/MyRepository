@@ -1,13 +1,10 @@
 package com.guotion.sicilia.ui.view;
 
-import java.io.File;
-
 import com.guotion.common.PictureBrowser.PictureBrowseView;
 import com.guotion.common.download.DownloadListener;
 import com.guotion.common.download.SimpleDownLoader2;
 import com.guotion.common.media.AudioPlayer;
 import com.guotion.common.media.AudioPlayerListener;
-import com.guotion.common.media.SongInfoUtils;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.common.utils.MyUtil;
@@ -16,8 +13,8 @@ import com.guotion.sicilia.bean.net.ChatItem;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.im.ChatServer;
 import com.guotion.sicilia.im.constant.ChatServerConstant;
+import com.guotion.sicilia.im.listener.DefaultIOCallback;
 import com.guotion.sicilia.ui.OtherInfoActivity;
-import com.guotion.sicilia.util.AndroidFileUtils;
 import com.guotion.sicilia.util.ExpressionUtil;
 import com.guotion.sicilia.util.UISkip;
 
@@ -29,9 +26,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaMetadataRetriever;
 import android.os.Handler;
 import android.os.Message;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +54,7 @@ public class MsgLeftView extends RelativeLayout {
 	
 	private ImageView leftHead;
 	private TextView leftContent;
+	private ImageView leftContentImg;
 	private ImageView playVoice;
 	private TextView leftAudiotime;
 	
@@ -70,6 +65,7 @@ public class MsgLeftView extends RelativeLayout {
 	private AnimationDrawable anim;
 	
 	Handler handler = new Handler() {
+		@SuppressLint("NewApi")
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -81,30 +77,43 @@ public class MsgLeftView extends RelativeLayout {
 				anim.start();
 				break;
 			case AUDIO_PLAYING:
-				
 				break;
 			case AUDIO_FINISHED:
 				isPlaying = false;
 				if (anim != null) {
-					anim.stop();
+					anim.stop();System.out.println("stop audio...");
+					anim = null;
 				}
 				playVoice.setBackgroundResource(R.drawable.playingvoice);
 				break;
 			case AUDIO_FAILED:
+				Toast.makeText(context, "播放语音失败，请稍后再试", Toast.LENGTH_SHORT).show();
 				isPlaying = false;
 				if (anim != null) {
-					anim.stop();
+					anim.stop();System.out.println("stop audio...");
+					anim = null;
 				}
 				playVoice.setBackgroundResource(R.drawable.playingvoice);
 				break;
-				
 			case AUDIO_DOWNLOAD_FINISHED:
 				String filepath = msg.getData().getString("filepath");
-				leftAudiotime.setText(new SongInfoUtils(context).getFileInfo(filepath)[0]+"`");
+				//leftAudiotime.setText(new SongInfoUtils(context).getFileInfo(filepath)[0]+"`");
+				if (CacheUtil.getInstence().iSCacheFileExists(filepath)) {//System.out.println("audioPath="+audioPath);
+					mediaMetadataRetriever.setDataSource(filepath);
+					String second = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+					int sec = Integer.parseInt(second);
+					leftAudiotime.setText((sec/1000)+"`");
+				}
 				break;
-				
 			case IMG_FINISHED:
-				leftContent.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, msg.getData().getString("filepath")));
+//				leftContent.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, msg.getData().getString("filepath")));
+				Bitmap bitmap = LocalImageCache.get().loadImageBitmap(msg.getData().getString("filepath"));
+				if(bitmap == null){
+					leftContentImg.setImageResource(R.drawable.default_img);
+//					AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+imgUrl,leftHead,R.drawable.head_orang,R.drawable.head_orang);
+				}else{
+					leftContentImg.setImageBitmap(bitmap);
+				}
 				break;
 			}
 		}
@@ -126,20 +135,33 @@ public class MsgLeftView extends RelativeLayout {
 		LayoutInflater.from(getContext()).inflate(R.layout.view_msg_left, this);
 		leftHead = (ImageView) findViewById(R.id.imageView_msg_left_head);
 		leftContent = (TextView) findViewById(R.id.textView_msg_left_content);
+		leftContentImg = (ImageView) findViewById(R.id.textView_msg_left_content_mig);
 		playVoice = (ImageView) findViewById(R.id.imageView_msg_left_play);
 		leftAudiotime = (TextView) findViewById(R.id.textView_msg_left_audiotime);
 	}
 	
-	@SuppressLint("NewApi")
 	private void initData(){
+		leftContent.setVisibility(View.VISIBLE);
+		leftContentImg.setVisibility(View.GONE);
+		playVoice.setVisibility(View.GONE);
+		leftAudiotime.setVisibility(View.GONE);
 		if(!chatItemInfo.state.equals("2")){
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					ChatServer.getInstance().getChat().sendReadChatMsgReceipt(chatItemInfo._id);
+					try {
+						ChatServer.getInstance().getChat().sendReadChatMsgReceipt(chatItemInfo._id);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}).start();
 		}
+		initHead();
+		initContent();
+	}
+	private void initHead(){
 		String imgUrl = chatItemInfo.userInfo.headPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){
 			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
@@ -151,6 +173,9 @@ public class MsgLeftView extends RelativeLayout {
 		}else{
 			leftHead.setImageResource(R.drawable.head_orang);
 		}
+	}
+	@SuppressLint("NewApi")
+	private void initContent(){
 		String type = chatItemInfo.mediaType;//System.out.println("mediaType=="+type);
 		if(type == null || type.equals("")){
 			leftContent.setText(chatItemInfo.msg);
@@ -162,13 +187,18 @@ public class MsgLeftView extends RelativeLayout {
 			leftContent.setVisibility(View.GONE);
 			playVoice.setVisibility(View.VISIBLE);
 			leftAudiotime.setVisibility(View.VISIBLE);
+			leftAudiotime.setText("");
 			String fileName = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
+			fileName = fileName.replace(":", "_");
 			String audioPath = CacheUtil.chatAudioCachePath+fileName;
 			if (CacheUtil.getInstence().iSCacheFileExists(audioPath)) {//System.out.println("audioPath="+audioPath);
 				//leftAudiotime.setText(new SongInfoUtils(context).getFileInfo(audioPath)[0]+"`");
 				mediaMetadataRetriever.setDataSource(audioPath);
-				leftAudiotime.setText(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+				String second = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+				int sec = Integer.parseInt(second);
+				leftAudiotime.setText((sec/1000)+"`");
 			}else{
+				leftAudiotime.setText("下载中");
 				SimpleDownLoader2 simpleDownLoader2 = new SimpleDownLoader2();
 				simpleDownLoader2.downLoad(ChatServerConstant.URL.SERVER_HOST+chatItemInfo.mediaUrl, CacheUtil.chatAudioCachePath, fileName.substring(1),new DownloadListener() {
 					@Override
@@ -182,24 +212,28 @@ public class MsgLeftView extends RelativeLayout {
 					}
 					@Override
 					public void finished(String filepath) {
-//						Message msg = new Message();
-//						msg.what = AUDIO_DOWNLOAD_FINISHED;
-//						msg.getData().putString("filepath", filepath);
-//						handler.sendMessage(msg);
-						System.out.println("语音下载成功");
+						Message msg = new Message();
+						msg.what = AUDIO_DOWNLOAD_FINISHED;
+						msg.getData().putString("filepath", filepath);
+						handler.sendMessage(msg);
+						System.out.println("语音下载成功=="+filepath);
 					}
 				});
 			}
 		}else if(MyUtil.isImgFile(type)){
+			leftContent.setVisibility(View.GONE);
+			leftContentImg.setVisibility(View.VISIBLE);
 			chatItemInfo.msg = "[图片]";//System.out.println("chatItemInfo.msg="+chatItemInfo.msg);
 			String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
 			path = path.replace(":", "_");
-//			SpannableString spannableString = new SpannableString(chatItemInfo.msg);
-//			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.chatImageCachePath+path);
-//			ImageSpan imageSpan = new ImageSpan(AndroidFileUtils.zoomIn(bitmap, 480, 480));
-//			spannableString.setSpan(imageSpan, 0, 4,Spanned.SPAN_INCLUSIVE_EXCLUSIVE); // 将该图片替换字符串中规定的位置中
-//			leftContent.setText(spannableString);
-			leftContent.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, CacheUtil.chatImageCachePath+path));
+//			leftContent.setText(ExpressionUtil.dealImg(getContext(), chatItemInfo.msg, null, CacheUtil.chatImageCachePath+path));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap( CacheUtil.chatImageCachePath+path);
+			if(bitmap == null){
+				leftContentImg.setImageResource(R.drawable.default_img);
+//				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+imgUrl,leftHead,R.drawable.head_orang,R.drawable.head_orang);
+			}else{
+				leftContentImg.setImageBitmap(bitmap);
+			}
 		}
 	}
 	public void setChatItemInfo(ChatItem chatItemInfo) {
@@ -208,6 +242,13 @@ public class MsgLeftView extends RelativeLayout {
 	}
 	private void initListener(){
 		leftContent.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				tvContentOnClick();
+				System.out.println("leftContent OnClickListener");
+			}
+		});
+		leftContentImg.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				tvContentOnClick();
@@ -224,18 +265,19 @@ public class MsgLeftView extends RelativeLayout {
 		leftHead.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//System.out.println("leftHead OnClickListener");
+				System.out.println("leftHead OnClickListener");
+				AppData.OTHER_USER = chatItemInfo.userInfo;
 				UISkip.skip(false, getContext(), OtherInfoActivity.class);
 			}
 		});
 	}
 	private void tvContentOnClick() {
 		//String filePath = CacheUtil.cachePath+"/sg.jpg";
-		
 		if(MyUtil.isAudioFile(chatItemInfo.mediaType)){
 			if(chatItemInfo.mediaUrl.endsWith(".caf")) return ;
 			if (isPlaying) return ;
 			String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
+			path = path.replace(":", "_");
 			String audioPath = CacheUtil.chatAudioCachePath+path;//System.out.println("audioPath="+audioPath);
 			if (audioPath == null) {
 				//
@@ -252,7 +294,7 @@ public class MsgLeftView extends RelativeLayout {
 			String path = chatItemInfo.mediaUrl.substring(chatItemInfo.mediaUrl.lastIndexOf("/"));
 			path = path.replace(":", "_");
 			String imgPath = CacheUtil.chatImageCachePath+path;
-			Dialog dialog = new Dialog(context,R.style.dialog_download_full_screen);
+			final Dialog dialog = new Dialog(context,R.style.dialog_download_full_screen);
 			PictureBrowseView pictureBrowseView = new PictureBrowseView(context,new com.guotion.common.PictureBrowser.DownloadListener() {
 				@Override
 				public void finished(String filepath) {
@@ -261,94 +303,47 @@ public class MsgLeftView extends RelativeLayout {
 					msg.what = IMG_FINISHED;
 					msg.getData().putString("filepath", filepath);
 					handler.sendMessage(msg);
-					System.out.println("图片下载成功");
+					System.out.println("图片下载成功   "+filepath);
 				}
 			});
 			String url = ChatServerConstant.URL.SERVER_HOST+chatItemInfo.mediaUrl;
 			pictureBrowseView.setImageUrls(new String[]{url}, new String[]{imgPath}, null);
+			pictureBrowseView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
 			dialog.setContentView(pictureBrowseView);
 			dialog.show();
 		}
 	}
-	private void showImage(String imagePath) {
-		
-	}
 	
 	private void playAudio(String filePath){System.out.println("play audio...");
-	if(audioPlayer == null){
-		audioPlayer = new AudioPlayer(null);
-	}
+//	if(audioPlayer == null){
+//		audioPlayer = new AudioPlayer(null);
+//	}
+	audioPlayer = new AudioPlayer(null);
 	audioPlayer.play(filePath, new AudioPlayerListener() {
 			@Override
-			public void onPrepared(int duration) {System.out.println(duration);
-				Message msg = new Message();
-				msg.what = AUDIO_PREPARED;
-				//msg.getData().putInt("duration", duration);
-				handler.sendMessage(msg);
+			public void onPrepared(int duration) {
+				handler.sendEmptyMessage(AUDIO_PREPARED);
 			}
 			@Override
 			public void onPlaying(int position) {
-//				Message msg = new Message();
-//				msg.what = AUDIO_PLAYING;
-//				msg.getData().putInt("position", position);
-//				handler.sendMessage(msg);
 			}
 			@Override
 			public void onException(Exception e) {
-				Message msg = new Message();
-				msg.what = AUDIO_FAILED;
-				handler.sendMessage(msg);
+				e.printStackTrace();
+				handler.sendEmptyMessage(AUDIO_FAILED);
 			}
 			@Override
 			public void finished() {
-				Message msg = new Message();
-				msg.what = AUDIO_FINISHED;
-				handler.sendMessage(msg);
+				handler.sendEmptyMessage(AUDIO_FINISHED);
 			}
 			@Override
 			public void onDestroy(){
-//				Message msg = new Message();
-//				msg.what = AUDIO_FINISHED;
-//				handler.sendMessage(msg);
-			}
-		});
-	}
-	private void downloadImg(){
-		//if(chatMessagePartInfo.url == null) return ;
-		SimpleDownLoader2 simpleDownLoader2 = new SimpleDownLoader2();
-		//String url = chatMessagePartInfo.url;
-		String url = "http://192.168.137.199:8080/UploadServer/files/sg.jpg";
-		simpleDownLoader2.downLoad(url,CacheUtil.cachePath,System.currentTimeMillis()+"", new DownloadListener() {
-			@Override
-			public void onPrepared(int filesize) {
-				Message msg = new Message();
-				msg.what = IMG_PREPARED;
-				msg.getData().putInt("filesize", filesize);
-				handler.sendMessage(msg);
-			}
-			@Override
-			public void onException(Exception e) {
-				Message msg = new Message();
-				msg.what = IMG_FAILED;
-				msg.getData().putString("exception", e.getMessage());
-				handler.sendMessage(msg);
-				//System.out.println("图片下载失败");
-			}
-			@Override
-			public void onDownloadSize(int size) {
-				Message msg = new Message();
-				msg.what = IMG_DOWNLOADING;
-				msg.getData().putInt("size", size);
-				handler.sendMessage(msg);
-			}
-			@Override
-			public void finished(String filepath) {
-				Message msg = new Message();
-				msg.what = IMG_FINISHED;
-				msg.getData().putString("filepath", filepath);
-				handler.sendMessage(msg);
-				
-				System.out.println("图片下载成功");
 			}
 		});
 	}

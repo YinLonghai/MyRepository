@@ -13,6 +13,7 @@ public class RequestSender {
 			byte[] result = HttpsUtil.sendGETRequest(url);
 			return dealByteArray(result);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new Exception("N:01");
 		}
 	}
@@ -21,6 +22,7 @@ public class RequestSender {
 			String encoding) throws Exception {
 		try {
 			byte[] result = HttpsUtil.sendPOSTRequest(url, params, encoding);
+			System.out.println("result=="+new String(result));
 			return dealByteArray(result);
 		} catch (Exception e) {
 			throw new Exception("N:01");

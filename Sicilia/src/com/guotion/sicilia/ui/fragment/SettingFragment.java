@@ -1,5 +1,8 @@
 package com.guotion.sicilia.ui.fragment;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -73,10 +76,10 @@ public class SettingFragment extends Fragment {
 		theme = (ImageView) contentView.findViewById(R.id.imageView_theme);
 		top = (TextView) contentView.findViewById(R.id.textView1);
 		imageView1 = (ImageView) contentView.findViewById(R.id.imageView1);
-//		if(AppData.USER.level.equals("1")){
-//			register.setVisibility(View.GONE);
-//			tag.setVisibility(View.GONE);
-//		}
+		if(AppData.getUser(getActivity()).level.equals("1")){
+			register.setVisibility(View.GONE);
+			tag.setVisibility(View.GONE);
+		}
 		name.setText(user.userName);
 		String imgUrl = user.headPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){
@@ -129,13 +132,16 @@ public class SettingFragment extends Fragment {
 					accountManageDialog.setOnLogoutListerner(new OnLogoutListerner() {
 						@Override
 						public void onLogout() {
-							AppData.chatMap.clear();
-							AppData.conversationList.clear();
+							final HashMap<String, String> map = new HashMap<String, String>();
+							for(Entry<String, String> entry : AppData.lastReadMap.entrySet()){
+								map.put(entry.getKey(), entry.getValue());
+							}
+							AppData.clear();
 							new Thread(new Runnable() {
 								@Override
 								public void run() {
 									try {
-										new OffineMessageManager().sendLastRead(AppData.lastReadMap, AppData.getUser(getActivity())._id);
+										new OffineMessageManager().sendLastRead(map, AppData.getUser(getActivity())._id);
 										ChatServer.getInstance().logout();
 									} catch (Exception e) {
 										// TODO Auto-generated catch block

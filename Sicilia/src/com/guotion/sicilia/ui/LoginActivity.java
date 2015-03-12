@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.guotion.common.utils.CacheUtil;
 import com.guotion.sicilia.R;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
@@ -98,8 +99,10 @@ public class LoginActivity extends Activity {
 			if (progressDialog != null) {
 				progressDialog.dismiss();
 			}
-			if(msg.what == 0)
+			if(msg.what == 0){
+				passwordEditText.setText("");
 				UISkip.skip(true, LoginActivity.this, MainActivity.class);
+			}
 			else{
 				showToast(msg.obj + "");
 			}
@@ -126,21 +129,30 @@ public class LoginActivity extends Activity {
 	}
 
 	private void initData() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				cleanCache();
+			}
+		}).start();
 		// Check device for Play Services APK. If check succeeds, proceed with
         //  GCM registration.
-//        if (checkPlayServices()) {
-//            gcm = GoogleCloudMessaging.getInstance(this);
-//            regid = getRegistrationId(getApplicationContext());
-//            if (regid==null || regid.equals("")) {
-//                registerInBackground();
-//            }
-//            //i add this code to test
-//            else{
-//            	Log.i(TAG,"regId="+regid);
-//            }
-//        } else {
-//            Log.i(TAG, "No valid Google Play Services APK found.");
-//        }
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            regid = getRegistrationId(getApplicationContext());
+            if (regid==null || regid.equals("")) {
+                registerInBackground();
+            }
+            //i add this code to test
+            else{
+            	Log.i(TAG,"regId="+regid);
+            }
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+	}
+	private void cleanCache(){
+		CacheUtil.getInstence().cleanCache(CacheUtil.avatarCachePath);
 	}
 
 	private String getVersionName() throws Exception {
@@ -200,6 +212,7 @@ public class LoginActivity extends Activity {
 								DefaultIOCallback defaultIOCallback = new DefaultIOCallback(AppData.getUser(LoginActivity.this)._id);
 								AppData.imMessageToUIListener = ImMessageToUIListener.getInstance();
 								defaultIOCallback.setMessageNotice(AppData.imMessageToUIListener);
+								defaultIOCallback.setConnectionListener(AppData.imMessageToUIListener);
 								ChatServer.getInstance().login(AppData.getUser(LoginActivity.this)._id, defaultIOCallback);
 								if(user.authorized.equals("0")){
 									message.obj = "您还未通过审核";

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
 import com.guotion.sicilia.ui.RegisterManageActivity.RegisterManageListener;
@@ -110,15 +111,23 @@ public class RegisterSettingActivity extends Activity {
 		};
 	};
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(RegisterSettingActivity.this);
 		initView();
 		initData();
 		initListener();
 	}
-
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(RegisterSettingActivity.this);
+		super.onDestroy();
+	}
 	private void initData() {
 		lvFrozenData = new ArrayList<User>();
 		lvNopassData = new ArrayList<User>();
@@ -230,7 +239,7 @@ public class RegisterSettingActivity extends Activity {
 						handler.sendEmptyMessage(5);
 					}
 					@Override
-					public void getDeleteUser(User user) {
+					public void getDeleteUser(User user) {System.out.println("getDeleteUser === "+user.userName);
 						lvNopassData.remove(user);
 						handler.sendEmptyMessage(3);
 					}

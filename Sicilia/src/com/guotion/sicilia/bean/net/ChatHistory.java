@@ -19,6 +19,8 @@ public class ChatHistory {
      * ChatItem类型，或者String类型
      */
     public List<Object> chatItem;
+    
+    private int __v;
 
     public ChatHistory() {}
 
@@ -51,4 +53,14 @@ public class ChatHistory {
     public void setChatItem(List<Object> chatItem) {
         this.chatItem = chatItem;
     }
+
+	public int get__v() {
+		return __v;
+	}
+
+	public void set__v(int __v) {
+		this.__v = __v;
+	}
+
+	
 }

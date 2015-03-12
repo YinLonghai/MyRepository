@@ -1,6 +1,7 @@
 package com.guotion.sicilia.ui.view;
 
 import com.google.gson.Gson;
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -20,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class CloudGridItemView extends LinearLayout{
-	private ImageView cloudHead;
+	private SimpleNetImageView cloudHead;
 	private TextView name;
 	private TextView date;
 	
@@ -37,7 +38,7 @@ public class CloudGridItemView extends LinearLayout{
 	}
 	private void initView(){
 		LayoutInflater.from(getContext()).inflate(R.layout.gridview_item_cloud, this);
-		cloudHead = (ImageView) findViewById(R.id.imageView_gridview_cloud_head);
+		cloudHead = (SimpleNetImageView) findViewById(R.id.imageView_gridview_cloud_head);
 		name = (TextView) findViewById(R.id.textView_name);
 		TextBold.setTextBold(name);
 		date = (TextView) findViewById(R.id.textView_date);
@@ -50,14 +51,17 @@ public class CloudGridItemView extends LinearLayout{
 	private void initData(){
 		name.setText(cloudItemInfo.name);
 		date.setText(cloudItemInfo.date);
+		cloudHead.setImageResource(R.drawable.cloud_thumbnail_bg);
 	}
 	public void initNetImg(){
 		User user = new Gson().fromJson(cloudItemInfo.owner+"", User.class);
 		String imgUrl = user.headPhoto;
 		if(imgUrl != null && !imgUrl.equals("")){
-			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/")));
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
 			if(bitmap == null){
-				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cloudHead, R.drawable.cloud_thumbnail_bg, R.drawable.cloud_thumbnail_bg);
+				cloudHead.loadImage(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cachePath, R.drawable.cloud_thumbnail_bg);
+//				AppData.volleyUtil.loadImageByVolley(ChatServerConstant.URL.SERVER_HOST+user.headPhoto, cloudHead, R.drawable.cloud_thumbnail_bg, R.drawable.cloud_thumbnail_bg);
 			}else{
 				cloudHead.setImageBitmap(bitmap);
 			}

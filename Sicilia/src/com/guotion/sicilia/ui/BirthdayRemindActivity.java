@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.ActivityInfo;
 import com.guotion.sicilia.bean.net.User;
 import com.guotion.sicilia.data.AppData;
@@ -46,13 +47,22 @@ public class BirthdayRemindActivity extends Activity{
 	private ArrayList<com.guotion.sicilia.bean.net.Activity> birthdayReminList;
 	private OnPullDownListener pullDownListener = null;
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_birthday_remind);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(BirthdayRemindActivity.this);
 		initData();
 		initView();
 		initListener();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		siciliaApplication.removeActivity(BirthdayRemindActivity.this);
+		super.onDestroy();
 	}
 	private void initData() {
 		birthdayReminList = new ArrayList<com.guotion.sicilia.bean.net.Activity>();

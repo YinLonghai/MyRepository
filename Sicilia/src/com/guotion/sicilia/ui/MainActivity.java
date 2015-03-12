@@ -7,17 +7,21 @@ import com.google.gson.Gson;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.volley.VolleyUtil;
 import com.guotion.sicilia.R;
+import com.guotion.sicilia.application.SiciliaApplication;
 import com.guotion.sicilia.bean.net.ChatGroup;
 import com.guotion.sicilia.bean.net.ChatItem;
 import com.guotion.sicilia.constants.AndroidRequestCode;
 import com.guotion.sicilia.data.AppData;
+import com.guotion.sicilia.ui.dialog.LoginOtherPhoneDialog;
 import com.guotion.sicilia.ui.fragment.ActivityFragment;
 import com.guotion.sicilia.ui.fragment.CloudFragment;
 import com.guotion.sicilia.ui.fragment.ConversationFragment;
 import com.guotion.sicilia.ui.fragment.MemberFragment;
 import com.guotion.sicilia.ui.fragment.SettingFragment;
 import com.guotion.sicilia.ui.listener.MessageFeedbackListener;
+import com.guotion.sicilia.ui.listener.OtherDiviceLoginListener;
 import com.guotion.sicilia.ui.listener.ReceiveGroupMessageListener;
+import com.guotion.sicilia.ui.listener.ReceiveMineMessageListener;
 import com.guotion.sicilia.ui.listener.ReceiveP2PMessageListener;
 import com.guotion.sicilia.ui.view.TabChooseView;
 import com.guotion.sicilia.ui.view.TabChooseView.OnSelectChangeListener;
@@ -49,6 +53,13 @@ public class MainActivity extends FragmentActivity {
 	private MemberFragment memberFragment = null;
 	private SettingFragment settingFragment = null;
 	
+	private LoginOtherPhoneDialog loginOtherPhoneDialog;
+	
+	private ReceiveP2PMessageListenerImpl receiveP2PMessageListenerImpl;
+	private ReceiveGroupMessageListenerImpl receiveGroupMessageListenerImpl;
+	private MessageFeedbackListenerImpl messageFeedbackListenerImpl;
+	private OtherDiviceLoginListenerImpl otherDiviceLoginListenerImpl;
+	
 	private Gson gson = new Gson();
 	private int theme;
 	private int oldSelected = 0;
@@ -61,19 +72,43 @@ public class MainActivity extends FragmentActivity {
 				titles[0] += 1;
 				tabChooseView.setTitle(titles);
 				break;
+			case 2:
+				if(loginOtherPhoneDialog == null){
+					loginOtherPhoneDialog = new LoginOtherPhoneDialog(MainActivity.this);
+				}
+				loginOtherPhoneDialog.show();
+				break;
+			case 3:
+				siciliaApplication.clear();
+				break;
 			}
 		}
 	};
 	
+	private SiciliaApplication siciliaApplication;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		siciliaApplication = (SiciliaApplication) getApplication();
+		siciliaApplication.addActivity(MainActivity.this);
+		AppData.clear();
 		initData();
 		initView();
 		initListener();
 	}
-	
+	@Override
+	protected void onDestroy() {
+		if(loginOtherPhoneDialog != null){
+			loginOtherPhoneDialog.dismiss();
+		}
+		AppData.imMessageToUIListener.cancleMessageFeedbackListener(messageFeedbackListenerImpl);
+		AppData.imMessageToUIListener.cancleOtherDiviceLoginListener(otherDiviceLoginListenerImpl);
+		AppData.imMessageToUIListener.cancleReceiveGroupMessageListeners(receiveGroupMessageListenerImpl);
+		AppData.imMessageToUIListener.cancleReceiveP2PMessageListeners(receiveP2PMessageListenerImpl);
+		siciliaApplication.removeActivity(MainActivity.this);
+		super.onDestroy();
+	}
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -96,7 +131,6 @@ public class MainActivity extends FragmentActivity {
 						{AppData.getThemeImgResId(theme, "setting_off"), AppData.getThemeImgResId(theme, "setting_on")}};
 				tabChooseView.setIcon(icons);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -131,7 +165,6 @@ public class MainActivity extends FragmentActivity {
 					{AppData.getThemeImgResId(theme, "cloud_off"), AppData.getThemeImgResId(theme, "cloud_on")},
 					{AppData.getThemeImgResId(theme, "setting_off"), AppData.getThemeImgResId(theme, "setting_on")}};
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//icons = new int[][]{{R.drawable.message_off_orang, R.drawable.message_on_orang},{R.drawable.member_off_orang, R.drawable.member_on_orang},{R.drawable.moment_off_orang, R.drawable.moment_on_orang},{R.drawable.cloud_off_orang, R.drawable.cloud_on_orang},{R.drawable.setting_off_orang, R.drawable.setting_on_orang}};
@@ -149,7 +182,6 @@ public class MainActivity extends FragmentActivity {
 
 	private void initListener() {
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			
 			@Override
 			public void onPageSelected(int arg0) {
 				tabChooseView.setSelected(arg0);	
@@ -159,64 +191,39 @@ public class MainActivity extends FragmentActivity {
 						titles[0] = 0;
 						tabChooseView.setTitle(titles);
 					}
-					
 				}
 			}
-			
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				// TODO Auto-generated method stub
 			}
-			
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
-				// TODO Auto-generated method stub	
 			}
 		});
 		tabChooseView.setOnSelectChangeListener(new OnSelectChangeListener() {
-			
 			@Override
 			public void selectChange(int selected) {
 				viewPager.setCurrentItem(selected);
 				changeFragment(selected);
 			}
 		});
-		AppData.imMessageToUIListener.registReceiveP2PMessageListeners(new ReceiveP2PMessageListener() {
+		receiveP2PMessageListenerImpl = new ReceiveP2PMessageListenerImpl();
+		AppData.imMessageToUIListener.registReceiveP2PMessageListeners(receiveP2PMessageListenerImpl);
+		receiveGroupMessageListenerImpl = new ReceiveGroupMessageListenerImpl();
+		AppData.imMessageToUIListener.registReceiveGroupMessageListeners(receiveGroupMessageListenerImpl);
+		messageFeedbackListenerImpl = new MessageFeedbackListenerImpl();
+		AppData.imMessageToUIListener.registMessageFeedbackListener(messageFeedbackListenerImpl);
+		otherDiviceLoginListenerImpl = new OtherDiviceLoginListenerImpl();
+		AppData.imMessageToUIListener.registOtherDiviceLoginListener(otherDiviceLoginListenerImpl);
+		
+		AppData.imMessageToUIListener.setReceiveMineMessageListener(new ReceiveMineMessageListener() {
+			
 			@Override
-			public void receiveP2PMessage(ChatItem chatItem) {
-				ChatGroup chatGroup = gson.fromJson(chatItem.chatGroup+"", ChatGroup.class);
-				AppData.lastReadMap.put(chatGroup._id, chatItem._id);
-				if(conversationFragment == null){
-					AppData.tempP2pChatList.add(chatItem);
-				}
-				if(viewPager.getCurrentItem() != 0){
-					handler.sendEmptyMessage(1);
-				}
+			public void receiveMineMessage(ChatItem item) {
+				AppData.chatItem = item;
 			}
 		});
-		AppData.imMessageToUIListener.registReceiveGroupMessageListeners(new ReceiveGroupMessageListener() {
-			@Override
-			public void receiveGroupMessage(ChatItem chatItem) {
-				ChatGroup chatGroup = gson.fromJson(chatItem.chatGroup+"", ChatGroup.class);
-				AppData.lastReadMap.put(chatGroup._id, chatItem._id);
-				if(conversationFragment == null){
-					AppData.tempGroupChatList.add(chatItem);
-				}
-				if(viewPager.getCurrentItem() != 0){
-					handler.sendEmptyMessage(1);
-				}
-			}
-		});
-		AppData.imMessageToUIListener.registMessageFeedbackListener(new MessageFeedbackListener() {
-			@Override
-			public void messageSendSuccess(ChatItem chatItem) {
-				updateChatItem(chatItem);
-			}
-			@Override
-			public void messageReaded(ChatItem chatItem) {
-				updateChatItem(chatItem);
-			}
-		});
+		
 	}
 	
 	private void updateChatItem(ChatItem chatItem){
@@ -236,7 +243,6 @@ public class MainActivity extends FragmentActivity {
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case AndroidRequestCode.REQ_CODE_UPLOAD_FILE://上传云文件
-				//TODO 
 //				data.getData().getPath();//TODO 文件路径
 				LogUtil.i("fiel path:" + data.getData().getPath());
 				if (cloudFragment != null) {
@@ -257,7 +263,7 @@ public class MainActivity extends FragmentActivity {
 				
 				break;
 			case AndroidRequestCode.REQ_CODE_UPDATE_FILE://修改云文件
-				if (cloudFragment != null) {System.out.println("aaa");
+				if (cloudFragment != null) {//System.out.println("aaa");
 					cloudFragment.addUpdateFile(AndroidFileUtils.uriToFilePath(MainActivity.this, data.getData()));
 				}
 				break;
@@ -316,7 +322,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	
 	public void changeFragment(int selected){
 		if (selected != oldSelected) {
 			if(fragments[selected] != null){
@@ -326,6 +331,60 @@ public class MainActivity extends FragmentActivity {
 				fragments[oldSelected].onStop();
 			}
 			oldSelected = selected;
+		}
+	}
+	
+	private class ReceiveP2PMessageListenerImpl implements ReceiveP2PMessageListener{
+		@Override
+		public void receiveP2PMessage(ChatItem chatItem) {
+			System.out.println("ReceiveP2PMessageListener in MainActivity....."+receiveP2PMessageListenerImpl);
+			ChatGroup chatGroup = gson.fromJson(chatItem.chatGroup+"", ChatGroup.class);
+			AppData.lastReadMap.put(chatGroup._id, chatItem._id);
+			if(conversationFragment == null){
+				AppData.tempP2pChatList.add(chatItem);
+			}
+			if(viewPager.getCurrentItem() != 0){
+				handler.sendEmptyMessage(1);
+			}
+		}
+	}
+	
+	private class ReceiveGroupMessageListenerImpl implements ReceiveGroupMessageListener{
+		@Override
+		public void receiveGroupMessage(ChatItem chatItem) {
+			ChatGroup chatGroup = gson.fromJson(chatItem.chatGroup+"", ChatGroup.class);
+			AppData.lastReadMap.put(chatGroup._id, chatItem._id);
+			if(conversationFragment == null){
+				AppData.tempGroupChatList.add(chatItem);
+			}
+			if(viewPager.getCurrentItem() != 0){
+				handler.sendEmptyMessage(1);
+			}
+		}
+	}
+	
+	private class MessageFeedbackListenerImpl implements MessageFeedbackListener{
+		@Override
+		public void messageSendSuccess(ChatItem chatItem) {
+			updateChatItem(chatItem);
+		}
+		@Override
+		public void messageReaded(ChatItem chatItem) {
+			updateChatItem(chatItem);
+		}
+	}
+	
+	private class OtherDiviceLoginListenerImpl implements OtherDiviceLoginListener{
+		@Override
+		public void otherDiviceLogin() {
+			System.out.println("otherDiviceLogin.....");
+			handler.sendEmptyMessage(2);
+			try {
+				Thread.sleep(3000);
+				handler.sendEmptyMessage(3);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

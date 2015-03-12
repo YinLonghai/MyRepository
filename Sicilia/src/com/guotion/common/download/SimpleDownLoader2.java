@@ -77,7 +77,7 @@ public class SimpleDownLoader2 {
 						downLoadFilePosition += numread;
 						if(downloadListener != null)
 							downloadListener.onDownloadSize(downLoadFilePosition);		
-					}
+					}System.out.println("downloadSavePath="+savepath +"/"+ fileName);
 					if(downloadListener != null)
 						downloadListener.finished(savepath +"/"+ fileName);
 				} catch (IOException e) {

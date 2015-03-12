@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-    <ImageView
+    <com.guotion.common.PictureBrowser.SimpleNetImageView
         android:id="@+id/ImageView_infor_avatar"
         android:layout_width="55dp"
         android:layout_height="55dp"

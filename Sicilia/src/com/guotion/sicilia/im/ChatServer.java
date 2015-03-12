@@ -38,10 +38,11 @@ public class ChatServer {
      * @param iocallback 消息通知接口
      * @throws Exception
      */
-    public void login(String userId, IOCallback iocallback) throws Exception {
+    public synchronized void login(String userId, IOCallback iocallback) throws Exception {
+    	logout();
+        if (userId == null || iocallback == null)
+            throw new Exception("iocallback不能为空");//用500来代表错误(iocallback不能为空)
         this.userId = userId;
-        if (iocallback == null)
-            throw new Exception("iocallback不能为空");
         this.ioCallback = iocallback;
         SSLContext context = SSLContext.getInstance("TLS");
         context.init(new KeyManager[0], new X509TrustManager[]{new X509TrustManagerImpl()}, new SecureRandom());

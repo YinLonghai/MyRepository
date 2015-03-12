@@ -1,5 +1,6 @@
 package com.guotion.sicilia.ui.view;
 
+import com.guotion.common.PictureBrowser.SimpleNetImageView;
 import com.guotion.common.utils.CacheUtil;
 import com.guotion.common.utils.LocalImageCache;
 import com.guotion.sicilia.R;
@@ -17,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class GroupItemView extends RelativeLayout{
-	private ImageView listImage;
+	private SimpleNetImageView listImage;
 	private TextView listName;
 
 	private ChatGroup entity;
@@ -36,10 +37,12 @@ public class GroupItemView extends RelativeLayout{
 	private void initData(){
 		listName.setText(entity.GroupName);
 		listName.setTextColor(Color.BLACK);
+		listImage.setImageResource(R.drawable.head_team_orang);
+		initNetImg();
 	}
 	private void initView(){
 		LayoutInflater.from(getContext()).inflate(R.layout.group_member_item, this);
-		listImage = (ImageView) findViewById(R.id.list_image);
+		listImage = (SimpleNetImageView) findViewById(R.id.list_image);
 		listName = (TextView) findViewById(R.id.list_name);
 	}
 	private void initListener(){
@@ -49,14 +52,14 @@ public class GroupItemView extends RelativeLayout{
 		// 设置头像 图片
 		String imgUrl = entity.GroupPhoto;
 		if (imgUrl != null && !imgUrl.equals("")) {
-			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(
-					CacheUtil.avatarCachePath
-							+ imgUrl.substring(imgUrl.lastIndexOf("/")));
+			String cachePath = CacheUtil.avatarCachePath+imgUrl.substring(imgUrl.lastIndexOf("/"));
+			Bitmap bitmap = LocalImageCache.get().loadImageBitmap(cachePath);
 			if (bitmap == null) {
-				AppData.volleyUtil.loadImageByVolley(
-						ChatServerConstant.URL.SERVER_HOST + entity.GroupPhoto,
-						listImage, R.drawable.head_team_orang,
-						R.drawable.head_team_orang);
+//				AppData.volleyUtil.loadImageByVolley(
+//						ChatServerConstant.URL.SERVER_HOST + entity.GroupPhoto,
+//						listImage, R.drawable.head_team_orang,
+//						R.drawable.head_team_orang);
+				listImage.loadImage(ChatServerConstant.URL.SERVER_HOST + imgUrl, cachePath, R.drawable.head_team_orang);
 			} else {
 				listImage.setImageBitmap(bitmap);
 			}

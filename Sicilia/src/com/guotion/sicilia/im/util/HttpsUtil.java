@@ -58,6 +58,7 @@ public class HttpsUtil {
 		HttpsURLConnection conn;
 		// 1> 组拼实体数据
 		// method=save&name=liming&timelength=100
+		System.out.println("url="+path);
 		StringBuilder entityBuilder = new StringBuilder("");
 		if (params != null && !params.isEmpty()) {
 			for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -79,12 +80,12 @@ public class HttpsUtil {
 			((HttpsURLConnection) conn).setSSLSocketFactory(socketFactory);
 			((HttpsURLConnection) conn).setHostnameVerifier(HOSTNAME_VERIFIER);
 		}
-		conn.setConnectTimeout(5 * 1000);
+		conn.setConnectTimeout(15 * 1000);
 		conn.setRequestMethod("POST");
 		conn.setDoOutput(true);// 允许输出数据
 		conn.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
-		conn.setRequestProperty("Content-Length", String.valueOf(entity.length));
+		conn.setRequestProperty("Content-Length", ""+entity.length);
 		OutputStream outStream = conn.getOutputStream();
 		outStream.write(entity);
 		outStream.flush();

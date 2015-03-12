@@ -64,16 +64,16 @@ public class CloudGridViewAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				final Dialog dialog = new Dialog(context,R.style.dialog_download_full_screen);
 				PictureBrowseView pictureBrowseView = new PictureBrowseView(context);
-//				pictureBrowseView.setFocusable(true);
-//				pictureBrowseView.setFocusableInTouchMode(true);
-//				pictureBrowseView.setOnClickListener(new OnClickListener() {
-//					@Override
-//					public void onClick(View v) {
-//						dialog.dismiss();
-//					}
-//				});
 				String url = picture.get(position);
 				pictureBrowseView.setImageUrls(new String[]{ChatServerConstant.URL.SERVER_HOST+url}, new String[]{CacheUtil.cloudImageCachePath+url.substring(url.lastIndexOf("/"))}, null);
+//				pictureBrowseView.setFocusable(true);
+//				pictureBrowseView.setFocusableInTouchMode(true);
+				pictureBrowseView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {System.out.println("aaaaaaa");
+						dialog.dismiss();
+					}
+				});
 				dialog.setContentView(pictureBrowseView);
 				dialog.show();
 			}

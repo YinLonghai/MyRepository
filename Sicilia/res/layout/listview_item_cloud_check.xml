@@ -5,7 +5,7 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
-    <ImageView
+    <com.guotion.common.PictureBrowser.SimpleNetImageView
         android:id="@+id/imageView_head"
         android:layout_width="55dp"
         android:layout_height="55dp"

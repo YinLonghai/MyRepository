@@ -76,10 +76,20 @@
             android:minHeight="50dp"
             android:layout_marginTop="3dp" 
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"/>
+            android:paddingRight="10dp"
+            android:inputType="text"
+            android:imeOptions="actionSend"/>
+        <Button
+            android:id="@+id/button_hold_record"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/btn_hold_record_selector"
+            android:visibility="gone"/>
 
         <TextView
-            android:id="@+id/textView_chat_send"
+            android:id="@+id/textView_chat_switch"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
@@ -103,5 +113,22 @@
         android:layout_height="match_parent"
         android:layout_above="@id/RelativeLayout_chat_edit"
         android:layout_below="@id/RelativeLayout_chat_title"/>
+	<RelativeLayout
+        android:id="@+id/RelativeLayout_record_state"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/ic_mic_normal"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
 
+		<ImageView
+		    android:id="@+id/imageView_record_volume"
+		    android:layout_width="37dp"
+		    android:layout_height="60dp"
+		    android:layout_centerHorizontal="true"
+		    android:layout_alignParentBottom="true"
+		    android:layout_marginBottom="61dp"
+		    android:src="@drawable/bg_mic_wave" />
+	    
+	</RelativeLayout>
 </RelativeLayout>

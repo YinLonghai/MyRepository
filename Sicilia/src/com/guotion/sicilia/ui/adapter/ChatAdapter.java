@@ -54,16 +54,17 @@ public class ChatAdapter extends BaseAdapter {
 		//User user = gson.fromJson(message.user+"", User.class);
 		User user = message.userInfo;//System.out.println((user==null)+"---"+(user._id==null));
 		if(user == null){
-			user = AppData.getUser(message.user+"");
+			user = AppData.getUser(message.user+"");//System.out.println("message.user---"+message.user);
 			if(user == null){
 				user = new User();
-				message.userInfo = new User();
+				message.userInfo = user;
 			}else{
 				message.userInfo = user;
 			}
 //			user = new User();
 //			System.out.println("消息数据有问题------"+message.msg);
 		}
+		//System.out.println(user._id);
 		if (convertView == null ) {
 			holder = new ViewHolder();
 			convertView = LayoutInflater.from(context).inflate(R.layout.listview_item_chat, null);//生成条目界面对象
@@ -72,9 +73,12 @@ public class ChatAdapter extends BaseAdapter {
 			if (!user._id.equals(AppData.getUser(context)._id)) {
 				holder.chatMessageLeftView.setChatItemInfo(message);
 				holder.chatMessageRightView.setVisibility(View.GONE);
-			}else {
+			}else if(!user._id.equals("")){
 				holder.chatMessageRightView.setChatItemInfo(message);
 				holder.chatMessageLeftView.setVisibility(View.GONE);
+			}else{
+				holder.chatMessageLeftView.setVisibility(View.GONE);
+				holder.chatMessageRightView.setVisibility(View.GONE);
 			}
 			convertView.setTag(holder);
 		}else{
@@ -83,10 +87,13 @@ public class ChatAdapter extends BaseAdapter {
 				holder.chatMessageLeftView.setVisibility(View.VISIBLE);
 				holder.chatMessageLeftView.setChatItemInfo(message);
 				holder.chatMessageRightView.setVisibility(View.GONE);
-			}else{
+			}else if(!user._id.equals("")){
 				holder.chatMessageRightView.setVisibility(View.VISIBLE);
 				holder.chatMessageRightView.setChatItemInfo(message);
 				holder.chatMessageLeftView.setVisibility(View.GONE);
+			}else{
+				holder.chatMessageLeftView.setVisibility(View.GONE);
+				holder.chatMessageRightView.setVisibility(View.GONE);
 			}
 		}
 		return convertView;
